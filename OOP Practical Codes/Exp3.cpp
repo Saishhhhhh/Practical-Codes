@@ -6,119 +6,110 @@ Write a program that instantiates the book and tape class, allows user to enter 
 If an exception is caught, replace all the data member values with zero values.
 */
 
-#include <iostream>
+#include<iostream>
 using namespace std;
 
-class publication
-{
-protected:
+class publication{
+    
+    private:
     string title;
     float price;
-public:
-    publication()
-    {
+
+    public:
+
+    publication(){
         title = "";
         price = 0.0;
     }
-    publication(string t, float p)
-    {
-        title = t;
-        price = p;
+
+    void getdata(){
+
+        cin.ignore();
+        cout << "Enter the title of the book: ";
+        getline(cin, title);
+        // title = title1;
+
+        cout << "Enter the price of the book: ";
+        cin >> price;
+        // price = price1;
+    }
+
+
+    void putdata(){
+        cout << "Title: " << title << endl;
+        cout << "Price: " << price << " Rs" << endl;
+        cout << endl;
     }
 };
 
-class book : public publication
-{
-private:
-    int pages;
-public:
-    book() : publication()
-    {
-        pages = 0;
+class book : public publication{
+
+    private:
+    int pageCount;
+
+    public:
+
+    void getdata(){
+
+        publication :: getdata();
+        cout << "Enter the page count of the book: ";
+        cin >> pageCount;
+        // pageCount = pageCount1;
+
     }
-    book(string t, int p, float pr) : publication(t, pr)
-    {
-        if (p > 0 && pr > 0.0)
-        {
-            pages = p;
-        }
-        else
-        {
-            throw(0);
-        }
+
+
+    void putdata(){
+
+        publication :: putdata();
+        cout << "Page Count: " << pageCount << " pages" << endl;
+        cout << endl;
+
     }
-    void display()
-    {
-        cout << title << "|" << price << "|" << pages << endl;
-    }
+
 };
 
-class tape : public publication
-{
-private:
-    float mins;
-public:
-    tape() : publication()
-    {
-        mins = 0.0;
+class tape : public publication{
+
+    private:
+    float playTime;
+
+    public:
+
+    void getdata(){
+
+        publication :: getdata();
+        cout << "Enter the play time of the book: ";
+        cin >> playTime;
+
     }
-    tape(string t, float p, float pr) : publication(t, pr)
-    {
-        if (p > 0 && pr > 0.0)
-        {
-            mins = p;
-        }
-        else
-        {
-            throw(0);
-        }
+
+
+    void putdata(){
+
+        publication :: putdata();
+        cout << "Play Time: " << playTime << " minutes" << endl;
+        cout << endl;
     }
-    void display()
-    {
-        cout << title << "|" << price << "|" << mins << endl;
-    }
+
 };
 
-int main()
-{
-    int pages;
-    float price;
-    string title;
-    cout << "Enter Book Details: Title | Pages | Price" << endl;
-    cin >> title >> pages >> price;
+int main(){
 
-    float mins, pr;
-    string t;
-    cout << "Enter Tape Details: Title | Mins | Price" << endl;
-    cin >> t >> mins >> pr;
+    book book1;
+    tape book2;
 
-    book b;
-    tape t1;
+    cout << "Enter the details of the book: \n" << endl;
+    book1.getdata();
 
-    try
-    {
-        b = book(title, pages, price);
-        t1 = tape(t, mins, pr);
-    }
-    catch (...)
-    {
-        b.display();
-        t1.display();
-        b = book("", 0, 0);
-        t1 = tape("", 0, 0);
-    }
+    cout << "Book details: \n" << endl;
+    book1.putdata();
 
-    b.display();
-    t1.display();
+    cout << "Enter the details of the book: \n" << endl;
+    book2.getdata();
+
+    cout << "Book details: \n" << endl;
+    book2.putdata();
 
     return 0;
 }
-
-    // INPUT Required
-
-    // Enter Book Details: Title | Pages | Price
-    // The Great Gatsby 180 10.99
-
-    // Enter Tape Details: Title | Mins | Price
-    // Best of Beethoven 60 14.99
-

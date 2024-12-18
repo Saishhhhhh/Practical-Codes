@@ -1,218 +1,139 @@
-#include <iostream>
-#include <cstring>  // Use <cstring> instead of <string.h> in C++
+// Develop an object oriented program in C++ to create a database of student information system containing the following information: 
 
+// Name, Roll number, Class, division, Date of Birth, Blood group, Contact address, telephone number, driving license no. etc 
+// Construct the database with suitable member functions for initializing and destroying the data viz 
+// constructor, default constructor, Copy constructor, destructor, static member functions, friend class, this pointer, inline 
+// code and dynamic memory allocation operators-new and delete.
+
+#include<iostream>
 using namespace std;
 
-class person_additional_info {
-    char address[20], license[20], insurance[20];
-    long int contact;
+class student;
 
-public:
-    // Default constructor
-    person_additional_info() {
-        strcpy(address, "XYZ");
-        strcpy(license, "XY-0000000000");
-        strcpy(insurance, "XY00000000X");
-        contact = 0;
-    }
+class Display {
 
-    // Destructor
-    ~person_additional_info() {
-        cout << "I am in Destructor (person_additional_info)" << endl;
-    }
+    public:
+        void showDetails(student &s);
 
-    // Friend class declaration
-    friend class person;
 };
 
-// Definition of the friend class
-class person {
-    char name[20], dob[10], blood[10];
-    float ht, wt;
-    static int count;  // Static variable to keep track of records
-    person_additional_info *pai;
+class student{
 
-public:
-    // Default constructor
-    person() {
-        strcpy(name, "XYZ");
-        strcpy(dob, "dd/mm/yy");
-        strcpy(blood, "A +");
-        ht = 0;
-        wt = 0;
-        pai = new person_additional_info;
+private:
+
+    string name;
+    int rollNumber;
+    string studentClass;
+    char division;
+    string dob;
+    string bloodGroup;
+    string address;
+    string telephone;
+    string licenseNo;
+
+public: 
+
+    student(){
+        name = "Unknown";
+        rollNumber = 0;
+        studentClass = "None";
+        division = 'A';
+        dob = "01-01-2000";
+        bloodGroup = "N/A";
+        address = "N/A";
+        telephone = "0000000000";
+        licenseNo = "N/A";
     }
 
-    // Copy constructor
-    person(const person &p1) {
-        strcpy(name, p1.name);
-        strcpy(dob, p1.dob);
-        strcpy(blood, p1.blood);
-        ht = p1.ht;
-        wt = p1.wt;
-        pai = new person_additional_info;
-        strcpy(pai->address, p1.pai->address);
-        strcpy(pai->license, p1.pai->license);
-        strcpy(pai->insurance, p1.pai->insurance);
-        pai->contact = p1.pai->contact;
+    student(string n, int roll, string cls, char div, string birth, string blood, string addr, string phone, string license) {
+        name = n;
+        rollNumber = roll;
+        studentClass = cls;
+        division = div;
+        dob = birth;
+        bloodGroup = blood;
+        address = addr;
+        telephone = phone;
+        licenseNo = license;
     }
 
-    // Destructor
-    ~person() {
-        cout << "\nI am in Destructor (person)" << endl;
-        delete pai;  // Free dynamically allocated memory
+    student(student &s){
+        name = s.name;
+        rollNumber = s.rollNumber;
+        studentClass = s.studentClass;
+        division = s.division;
+        dob = s.dob;
+        bloodGroup = s.bloodGroup;
+        address = s.address;
+        telephone = s.telephone;
+        licenseNo = s.licenseNo;
     }
 
-    // Static member function to display the count
-    static void showcount() {
-        cout << "\nNo of records count = " << count << "\n";
+    ~student(){
+        cout << "Destructor called for: " << name << endl;
     }
 
-    // Function to get data (using 'this' pointer)
-    void getdata(char name[20]) {
-        strcpy(this->name, name);
-        cout << "\nEnter date of birth: ";
-        cin >> dob;
+    friend class Display;
 
-        cout << "Enter blood group: ";
-        cin >> blood;
-
-        cout << "Enter height: ";
-        cin >> ht;
-
-        cout << "Enter weight: ";
-        cin >> wt;
-
-        cout << "Enter address: ";
-        cin >> pai->address;
-
-        cout << "Enter License number: ";
-        cin >> pai->license;
-
-        cout << "Enter Insurance policy number: ";
-        cin >> pai->insurance;
-
-        cout << "Enter Contact number: ";
-        cin >> pai->contact;
-
-        count++;
+    inline void showRollNumber(){
+        cout << "Roll Number: " << rollNumber << endl;
     }
 
-    // Inline function to display data
-    inline void display() const {
-        cout << "\t" << name;
-        cout << "\t" << dob;
-        cout << "\t" << blood;
-        cout << "\t" << ht;
-        cout << "\t" << wt;
-        cout << "\t" << pai->address;
-        cout << "\t" << pai->license;
-        cout << "\t" << pai->insurance;
-        cout << "\t" << pai->contact;
+    static student* createStudent(){
+        return new student();
     }
+
+    static void deleteStudent(student *obj1){
+        delete obj1;
+    }
+
+    void showInfo() {
+        cout << "Student Info (" << this << ")" << endl;
+        cout << "Name: " << this->name << endl;
+        cout << "Roll Number: " << this->rollNumber << endl;
+    }
+
 };
 
-// Initialize static variable
-int person::count = 0;
+void Display :: showDetails(student &s){
 
-int main() {
-    person *p1, *p2;
-    int ch;
+    cout << "---- Student Details ----" << endl;
+    cout << "Name: " << s.name << endl;
+    cout << "Roll Number: " << s.rollNumber << endl;
+    cout << "Class: " << s.studentClass << endl;
+    cout << "Division: " << s.division << endl;
+    cout << "Date of Birth: " << s.dob << endl;
+    cout << "Blood Group: " << s.bloodGroup << endl;
+    cout << "Address: " << s.address << endl;
+    cout << "Telephone: " << s.telephone << endl;
+    cout << "License No: " << s.licenseNo << endl;
 
-    // Dynamic memory allocation for person objects
-    p1 = new person;  // Call default constructor
-    p2 = new person(*p1);  // Call copy constructor
+};
 
-    cout << "\tName\tDob\tBlood\tHt\tWt\tAddress\tLicense\tInsurance\tContact\n";
-    cout << "Default Constructor Value\n";
-    p1->display();
-    cout << "\nCopy Constructor Value\n";
-    p2->display();
-    
-    int n;
-    cout << "\nEnter how many records you want: ";
-    cin >> n;
+int main(){
 
-    person p3[n];  // Array of objects
-    char name[20];
-    int x = 0;
+    student s1;  
+    cout << "\nDefault Constructor:" << endl;
+    s1.showInfo();
 
-    do {
-        cout << "\nWelcome to Personal Database System";
-        cout << "\n1. Enter the record";
-        cout << "\n2. Display the record";
-        cout << "\n3. Exit";
-        cout << "\nEnter your choice: ";
-        cin >> ch;
+    student s2("Saish",101, "12th", 'B', "15-08-2003", "O+", "123 Street, City", "1234567890", "DL123456");
+    s2.showInfo();
 
-        switch (ch) {
-            case 1: {
-                cout << "\nEnter the Name: ";
-                cin >> name;
-                p3[x].getdata(name);
-                person::showcount();  // Call static function
-                x++;
-                break;
-            }
-            case 2: {
-                cout << "\tName\tDob\tBlood\tHt\tWt\tAddress\tLicense\tInsurance\tContact\n";
-                for (int i = 0; i < n; i++) {
-                    cout << "\n";
-                    p3[i].display();  // Call inline function
-                }
-                break;
-            }
-            case 3: {
-                cout << "Exiting...\n";
-                break;
-            }
-            default:
-                cout << "Invalid choice, please try again.\n";
-        }
-    } while (ch != 3);
+    student s3 = s2;
+    cout << "\nCopy Constructor:" << endl;
+    s3.showInfo();
 
-    // Free dynamically allocated memory
-    delete p1;
-    delete p2;
+    cout << "\nInline Function:" << endl;
+    s3.showRollNumber();
+
+    Display d;
+    cout << "\nUsing Friend Class to Display Full Details of Student:" << endl;
+    d.showDetails(s2);
+
+    //Dynamic Memory Allocation
+    student *s4 = student::createStudent();
+    d.showDetails(*s4);
+    student::deleteStudent(s4);
 
     return 0;
 }
-
-/* 
-Sample Output:
-Name    Dob    Blood   Ht   Wt   Address   License   Insurance   Contact
-Default Constructor Value
-XYZ     dd/mm/yy  A +  0    0    XYZ       XY-0000000000 XY00000000X 0
-Copy Constructor Value
-XYZ     dd/mm/yy  A +  0    0    XYZ       XY-0000000000 XY00000000X 0
-
-Enter how many records you want: 2
-Welcome to Personal Database System
-1. Enter the record
-2. Display the record
-3. Exit
-Enter your choice: 1
-
-Enter the Name: abc
-Enter date of birth: 15/5/2016
-Enter blood group: o+
-Enter height: 5
-Enter weight: 50
-Enter address: pune
-Enter License number: jhdf87
-Enter Insurance policy number: hdjsg7786
-Enter Contact number: 989898989 (9 digits only)
-
-No of records count = 1
-
-Welcome to Personal Database System
-1. Enter the record
-2. Display the record
-3. Exit
-Enter your choice: 2
-
-Name    Dob    Blood   Ht   Wt   Address   License   Insurance   Contact
-abc     15/5/2016  o+  5    50   pune       jhdf87    hdjsg7786  989898989
-XYZ     dd/mm/yy  A +  0    0    XYZ       XY-0000000000 XY00000000X 0
-*/
-

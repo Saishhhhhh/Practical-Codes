@@ -3,47 +3,31 @@
 // When the program runs, the user is prompted to type the name of a state. 
 // The program then looks in the map, using the state name as an index and returns the population of the state.
 
-#include <iostream>
-#include <map>
-#include <string>
+#include<iostream>
+#include<map>
 using namespace std;
 
-int main() {
-    typedef map<string, int> mapType;
-    mapType populationMap;
-    populationMap.insert(pair<string, int>("Maharashtra", 7026357));
-    populationMap.insert(pair<string, int>("Rajasthan", 6578936));
-    populationMap.insert(pair<string, int>("Karnataka", 6678993));
-    populationMap.insert(pair<string, int>("Punjab", 5789032));
-    populationMap.insert(pair<string, int>("West Bengal", 6676291));
+int main(){
+    string state;
 
-    mapType::iterator iter;
-    cout << "========Population of states in India==========\n";
-    cout << "\n Size of populationMap: " << populationMap.size() << "\n";
-    string state_name;
-    cout << "\n Enter name of the state: ";
-    cin >> state_name;
-    iter = populationMap.find(state_name);
-    if (iter != populationMap.end())
-        cout << state_name << "'s population is " << iter->second;
-    else
-        cout << "Key is not in populationMap" << "\n";
+    map<string, int> mpp;
+    mpp.emplace("Maharashtra", 800);
+    mpp.emplace("Tamil Nadu", 700);
+    mpp.emplace("Goa", 200);
+    mpp.emplace("Gujarat", 700);
+    mpp.emplace("Rajasthan", 600);
+    mpp.emplace("Bihar", 900);
+    mpp.emplace("Uttar Pradesh", 1000);
+    mpp.emplace("Punjab", 500);
+    mpp.emplace("Assam", 400);
+    mpp.emplace("Jammu Kashmir", 400);
+
     
-    populationMap.clear();
+    cout << "Enter the name of the state: ";
+    cin >> state;
+
+    map<string, int> :: iterator lol = mpp.find(state);
+    cout << "Population of " << (*lol).first << " is " << (*lol).second << endl; 
+
     return 0;
 }
-
-/*
-Input:
-Enter name of the state: Maharashtra
-
-Output:
-Maharashtra's population is 7026357
-
-Input:
-Enter name of the state: Gujarat
-
-Output:
-Key is not in populationMap
-
-*/

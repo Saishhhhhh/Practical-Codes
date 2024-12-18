@@ -5,78 +5,93 @@
 // 3. Overload operator* to multiply two complex numbers.
 // 4. Overload operators << and >> to print and read Complex Numbers.
 
-#include<iostream> 
+#include<iostream>
 using namespace std;
 
-class Complex {
-private:
-    int real, imag;
+class complex{
+    int real;
+    int img;
 
-public:
-    Complex(int r = 0, int i = 0) {
-        real = r;
-        imag = i;
+    public:
+
+    complex(){
+        real = 0;
+        img = 0;
     }
 
-    friend ostream& operator<<(ostream &out, const Complex &obj);
-    friend istream& operator>>(istream &in, Complex &obj);
+    complex(int real1, int img1){
 
-    Complex operator+(const Complex &obj) {
-        Complex res;
-        res.real = real + obj.real;
-        res.imag = imag + obj.imag;
-        return res;
+        real = real1;
+        img = img1;
+
     }
 
-    Complex operator*(const Complex &obj) {
-        Complex res;
-        res.real = (real * obj.real) - (imag * obj.imag);
-        res.imag = (real * obj.imag) + (imag * obj.real);
-        return res;
+    void display(){
+        cout << real << " + " << img << "i" << endl;
     }
+
+    complex operator +(complex obj){
+        complex obj3;
+
+        obj3.real = real + obj.real;
+        obj3.img = img + obj.img;
+
+        return obj3;
+    }
+
+    //c1 = a+bi  c2 = c+di
+    //(ac-bd) + (ad+bc)i
+
+    complex operator *(complex obj){
+        complex obj3;
+
+        obj3.real = (real*obj.real) - (img*obj.img);
+        obj3.img = (real * obj.img) + (obj.real * img);
+
+        return obj3;
+    }
+
+    friend istream& operator>>(istream& input, complex& obj){
+        
+        cout << "Enter real part: ";
+        input >> obj.real;
+        cout << "Enter imaginary part: ";
+        input >> obj.img;
+        return input;
+    }
+
+
+    friend ostream& operator<<(ostream& output, complex& obj){
+        output << obj.real << " + " << obj.img << "i";
+        return output;
+    }
+
 };
 
-ostream& operator<<(ostream &out, const Complex &obj) {
-    out << obj.real << "+i" << obj.imag;
-    return out;
-}
+int main(){
 
-istream& operator>>(istream &in, Complex &obj) {
-    cout << "\n Enter Real part: ";
-    in >> obj.real;
-    cout << "\n Enter Imaginary part: ";
-    in >> obj.imag;
-    return in;
-}
+    complex c1(3,2);
+    complex c2(2,6);
+    
+    // c1.display();
+    // c2.display();
 
-int main() {
-    Complex c1, c2, c3, c4;
-    
-    cout << "\n Enter First Number:";
-    cin >> c1;
-    
-    cout << "\n Enter Second Number:";
-    cin >> c2;
-    
+    complex c3;
     c3 = c1 + c2;
-    cout << "\n The Addition = " << c3;
-    
-    c4 = c1 * c2;
-    cout << "\n The Multiplication = " << c4;
-    
-    cout << "\n\n";
+
+    c3.display();
+
+    complex c4;
+    c4 = c1*c2;
+
+    c4.display();
+
+    complex c5;
+    cin >> c5;
+
+    cout << "Entered complex number: " << c5 << endl;
+
+    c5.display();
+
     return 0;
 }
-
-/* 
-Input Required:
-
-Enter First Number:
-Enter Real part: 3
-Enter Imaginary part: 4
-
-Enter Second Number:
-Enter Real part: 1
-Enter Imaginary part: 2
-
-*/
