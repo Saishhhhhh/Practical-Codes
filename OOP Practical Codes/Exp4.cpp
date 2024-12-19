@@ -37,5 +37,7 @@ int main(){
         cout << phoneRead << endl;
     }
 
+    file.close();
+
     return 0;
 }
