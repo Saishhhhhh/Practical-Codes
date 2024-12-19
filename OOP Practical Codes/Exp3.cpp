@@ -5,111 +5,136 @@ From this class derive two classes: book which adds a page count (type int) and 
 Write a program that instantiates the book and tape class, allows user to enter data and displays the data members. 
 If an exception is caught, replace all the data member values with zero values.
 */
-
-#include<iostream>
+#include <iostream>
+#include <string>
 using namespace std;
 
-class publication{
-    
-    private:
+class publication {
+
+private:
     string title;
     float price;
 
-    public:
-
-    publication(){
+public:
+    publication() {
         title = "";
         price = 0.0;
     }
 
-    void getdata(){
-
+    void getdata() {
         cin.ignore();
-        cout << "Enter the title of the book: ";
+        cout << "Enter the title of the publication: ";
         getline(cin, title);
-        // title = title1;
 
-        cout << "Enter the price of the book: ";
+        cout << "Enter the price of the publication: ";
         cin >> price;
-        // price = price1;
+
+        if (cin.fail() || price < 0) {
+            throw "Invalid price entered! Price must be a non-negative number.";
+        }
     }
 
-
-    void putdata(){
+    void putdata() {
         cout << "Title: " << title << endl;
         cout << "Price: " << price << " Rs" << endl;
-        cout << endl;
+    }
+
+    void reset() {
+        title = "";
+        price = 0.0;
     }
 };
 
-class book : public publication{
+class book : public publication {
 
-    private:
+private:
     int pageCount;
 
-    public:
+public:
+    book(){
+        pageCount = 0;
+    }
 
-    void getdata(){
+    void getdata() {
+        publication::getdata();
 
-        publication :: getdata();
         cout << "Enter the page count of the book: ";
         cin >> pageCount;
-        // pageCount = pageCount1;
 
+        if (cin.fail() || pageCount < 0) {
+            throw "Invalid page count entered! Page count must be a non-negative integer.";
+        }
     }
 
-
-    void putdata(){
-
-        publication :: putdata();
+    void putdata() {
+        publication::putdata();
         cout << "Page Count: " << pageCount << " pages" << endl;
-        cout << endl;
-
     }
 
+    void reset() {
+        publication::reset();
+        pageCount = 0;
+    }
 };
 
-class tape : public publication{
+class tape : public publication {
 
-    private:
+private:
     float playTime;
 
-    public:
+public:
+    tape(){
+        playTime = 0.0;
+    }
 
-    void getdata(){
+    void getdata() {
+        publication::getdata();
 
-        publication :: getdata();
-        cout << "Enter the play time of the book: ";
+        cout << "Enter the play time of the tape: ";
         cin >> playTime;
 
+        if (cin.fail() || playTime < 0) {
+            throw "Invalid play time entered! Play time must be a non-negative number.";
+        }
     }
 
-
-    void putdata(){
-
-        publication :: putdata();
+    void putdata() {
+        publication::putdata();
         cout << "Play Time: " << playTime << " minutes" << endl;
-        cout << endl;
     }
 
+    void reset() {
+        publication::reset();
+        playTime = 0.0;
+    }
 };
 
-int main(){
+int main() {
 
     book book1;
-    tape book2;
+    tape tape1;
 
-    cout << "Enter the details of the book: \n" << endl;
-    book1.getdata();
+    try {
+        cout << "Enter the details of the book:\n" << endl;
+        book1.getdata();
+    } catch (const char *msg) {
+        cout << "Error: " << msg << endl;
+        book1.reset();
+    }
 
-    cout << "Book details: \n" << endl;
+    cout << "\nBook details:\n" << endl;
     book1.putdata();
 
-    cout << "Enter the details of the book: \n" << endl;
-    book2.getdata();
+    try {
+        cout << "Enter the details of the tape:\n" << endl;
+        tape1.getdata();
+    } catch (const char *msg) {
+        cout << "Error: " << msg << endl;
+        tape1.reset();
+    }
 
-    cout << "Book details: \n" << endl;
-    book2.putdata();
+    cout << "\nTape details:\n" << endl;
+    tape1.putdata();
 
     return 0;
 }
