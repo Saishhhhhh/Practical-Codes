@@ -1,140 +1,141 @@
-/*
-Aim: Imagine a publishing company which does marketing for book and audio cassette versions. 
-Create a class publication that stores the title (a string) and price (type float) of publications. 
-From this class derive two classes: book which adds a page count (type int) and tape which adds a playing time in minutes (type float).
-Write a program that instantiates the book and tape class, allows user to enter data and displays the data members. 
-If an exception is caught, replace all the data member values with zero values.
-*/
-#include <iostream>
-#include <string>
+#include<iostream>
 using namespace std;
 
-class publication {
+class student;
 
-private:
-    string title;
-    float price;
+class Display {
 
-public:
-    publication() {
-        title = "";
-        price = 0.0;
-    }
+    public:
+        void showDetails(student &s);
 
-    void getdata() {
-        cin.ignore();
-        cout << "Enter the title of the publication: ";
-        getline(cin, title);
-
-        cout << "Enter the price of the publication: ";
-        cin >> price;
-
-        if (cin.fail() || price < 0) {
-            throw "Invalid price entered! Price must be a non-negative number.";
-        }
-    }
-
-    void putdata() {
-        cout << "Title: " << title << endl;
-        cout << "Price: " << price << " Rs" << endl;
-    }
-
-    void reset() {
-        title = "";
-        price = 0.0;
-    }
 };
 
-class book : public publication {
+class student{
 
 private:
-    int pageCount;
 
-public:
-    book(){
-        pageCount = 0;
+    string name;
+    int rollNumber;
+    string studentClass;
+    char division;
+    string dob;
+    string bloodGroup;
+    string address;
+    string telephone;
+    string licenseNo;
+
+public: 
+
+    student(){
+        name = "Unknown";
+        rollNumber = 0;
+        studentClass = "None";
+        division = 'A';
+        dob = "01-01-2000";
+        bloodGroup = "N/A";
+        address = "N/A";
+        telephone = "0000000000";
+        licenseNo = "N/A";
     }
 
-    void getdata() {
-        publication::getdata();
-
-        cout << "Enter the page count of the book: ";
-        cin >> pageCount;
-
-        if (cin.fail() || pageCount < 0) {
-            throw "Invalid page count entered! Page count must be a non-negative integer.";
+    student(string n, int roll, string cls, char div, string birth, string blood, string addr, string phone, string license) {
+        if (roll <= 0) {
+            throw "Error: Roll number must be greater than 0!";
         }
+        name = n;
+        rollNumber = roll;
+        studentClass = cls;
+        division = div;
+        dob = birth;
+        bloodGroup = blood;
+        address = addr;
+        telephone = phone;
+        licenseNo = license;
     }
 
-    void putdata() {
-        publication::putdata();
-        cout << "Page Count: " << pageCount << " pages" << endl;
+    student(student &s){
+        name = s.name;
+        rollNumber = s.rollNumber;
+        studentClass = s.studentClass;
+        division = s.division;
+        dob = s.dob;
+        bloodGroup = s.bloodGroup;
+        address = s.address;
+        telephone = s.telephone;
+        licenseNo = s.licenseNo;
     }
 
-    void reset() {
-        publication::reset();
-        pageCount = 0;
+    ~student(){
+        cout << "Destructor called for: " << name << endl;
     }
+
+    friend class Display;
+
+    inline void showRollNumber(){
+        cout << "Roll Number: " << rollNumber << endl;
+    }
+
+    static student* createStudent(){
+        return new student();
+    }
+
+    static void deleteStudent(student *obj1){
+        delete obj1;
+    }
+
+    void showInfo() {
+        cout << "Student Info (" << this << ")" << endl;
+        cout << "Name: " << this->name << endl;
+        cout << "Roll Number: " << this->rollNumber << endl;
+    }
+
 };
 
-class tape : public publication {
+void Display :: showDetails(student &s){
 
-private:
-    float playTime;
+    cout << "---- Student Details ----" << endl;
+    cout << "Name: " << s.name << endl;
+    cout << "Roll Number: " << s.rollNumber << endl;
+    cout << "Class: " << s.studentClass << endl;
+    cout << "Division: " << s.division << endl;
+    cout << "Date of Birth: " << s.dob << endl;
+    cout << "Blood Group: " << s.bloodGroup << endl;
+    cout << "Address: " << s.address << endl;
+    cout << "Telephone: " << s.telephone << endl;
+    cout << "License No: " << s.licenseNo << endl;
 
-public:
-    tape(){
-        playTime = 0.0;
-    }
-
-    void getdata() {
-        publication::getdata();
-
-        cout << "Enter the play time of the tape: ";
-        cin >> playTime;
-
-        if (cin.fail() || playTime < 0) {
-            throw "Invalid play time entered! Play time must be a non-negative number.";
-        }
-    }
-
-    void putdata() {
-        publication::putdata();
-        cout << "Play Time: " << playTime << " minutes" << endl;
-    }
-
-    void reset() {
-        publication::reset();
-        playTime = 0.0;
-    }
 };
 
-int main() {
+int main(){
 
-    book book1;
-    tape tape1;
-
+    
+        student s1;  
+        cout << "\nDefault Constructor:" << endl;
+        s1.showInfo();
     try {
-        cout << "Enter the details of the book:\n" << endl;
-        book1.getdata();
-    } catch (const char *msg) {
-        cout << "Error: " << msg << endl;
-        book1.reset();
+        student s2("Saish", -101, "12th", 'B', "15-08-2003", "O+", "123 Street, City", "1234567890", "DL123456");
+        s2.showInfo();
+    }
+    catch (const char* e) {
+        cout << e << endl;
     }
 
-    cout << "\nBook details:\n" << endl;
-    book1.putdata();
+    student s3("Saish", 101, "12th", 'B', "15-08-2003", "O+", "123 Street, City", "1234567890", "DL123456");
+    cout << "\nCopy Constructor:" << endl;
+    student s4 = s3;
+    s4.showInfo();
 
-    try {
-        cout << "Enter the details of the tape:\n" << endl;
-        tape1.getdata();
-    } catch (const char *msg) {
-        cout << "Error: " << msg << endl;
-        tape1.reset();
-    }
+    cout << "\nInline Function:" << endl;
+    s3.showRollNumber();
 
-    cout << "\nTape details:\n" << endl;
-    tape1.putdata();
+    Display d;
+    cout << "\nUsing Friend Class to Display Full Details of Student:" << endl;
+    d.showDetails(s3);
+
+    //Dynamic Memory Allocation
+    student *s5 = student::createStudent();
+    d.showDetails(*s5);
+    student::deleteStudent(s5);
 
     return 0;
 }
