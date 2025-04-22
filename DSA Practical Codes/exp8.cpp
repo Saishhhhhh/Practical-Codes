@@ -102,16 +102,16 @@ void print(int l1, int r1)
     return;
 }
 
-When asked for the number of nodes, enter: 4
-For successful search probabilities (p[i]), enter:
-p[1]: 0.3
-p[2]: 0.2
-p[3]: 0.1
-p[4]: 0.2
+// When asked for the number of nodes, enter: 4
+// For successful search probabilities (p[i]), enter:
+// p[1]: 0.3
+// p[2]: 0.2
+// p[3]: 0.1
+// p[4]: 0.2
 
-For unsuccessful search probabilities (q[i]), enter:
-q[0]: 0.1
-q[1]: 0.1
-q[2]: 0.1
-q[3]: 0.1
-q[4]: 0.1
+// For unsuccessful search probabilities (q[i]), enter:
+// q[0]: 0.1
+// q[1]: 0.1
+// q[2]: 0.1
+// q[3]: 0.1
+// q[4]: 0.1
