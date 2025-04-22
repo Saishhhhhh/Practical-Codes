@@ -1,247 +1,207 @@
-// Consider telephone book database of N clients. Make use of a hash table implementation
-// to quickly look up client's telephone number. Make use of two collision handling techniques
-// and compare them using number of comparisons required to find a set of telephone numbers
+// Convert given binary tree into threaded binary tree. Analyze time and space complexity of the
+// algorithm
 
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 
-// Store details : Node-> Key Name Telephone
-class node {
-private:
-    string name;
-    string telephone;
-    int key;
-
-public:
-    node() {
-        key = 0;
-    }
-    friend class hashing; // To access the private members of class node
+struct node {
+    int data;
+    node *left, *right;
+    int lbit, rbit;
 };
 
-// Hashing Function that generates different key value
-// Sum of ascii value of each character in string
-int ascii_generator(string s) {
-    int sum = 0;
-    for (int i = 0; s[i] != '\0'; i++)
-        sum = sum + s[i];
-    return sum % 100;
+class tbt {
+    node *temp = NULL, *t1 = NULL, *s = NULL, *head = NULL, *t = NULL;
+
+public:
+    node *create();
+    void insert();
+    node *insuc(node*);
+    node *inpre(node*);
+    void dis();
+    void display(node*);
+    void thr();
+    void thread(node*);
+};
+
+node *tbt::create() {
+    node *p = new(struct node);
+    p->left = NULL;
+    p->right = NULL;
+    p->lbit = 0;
+    p->rbit = 0;
+    cout << "\nEnter the data: ";
+    cin >> p->data;
+    return p;
 }
 
-// Class -> Hashing
-class hashing {
-private:
-    node data[100]; // Size of directory -> 100
-    string n;
-    string tele;
-    int k, index;
-    int size = 100;
+void tbt::insert() {
+    temp = create();
+    
+    if (head == NULL) {
+        node *p = new(struct node);
+        head = p;
+        head->left = temp;
+        head->right = head;
+        head->lbit = 1;
+        head->rbit = 0;
+        temp->left = head;
+        temp->right = head;
+        temp->lbit = 0;
+        temp->rbit = 0;
+    } else {
+        t1 = head;
+        t1 = t1->left;
 
-public:
-    hashing() {
-        k = 0;
-    }
-
-    // Function to create record
-    void create_record(string n, string tele) {
-        k = ascii_generator(n); // using ascii value of string as key
-        index = k % size;
-        for (int j = 0; j < size; j++) {
-            if (data[index].key == 0) {
-                data[index].key = k;
-                data[index].name = n;
-                data[index].telephone = tele;
+        while (t1 != NULL) {
+            s = t1;
+            if (((temp->data) > (t1->data)) && t1->rbit == 1) {
+                t1 = t1->right;
+            } else if (((temp->data) < (t1->data)) && t1->lbit == 1) {
+                t1 = t1->left;
+            } else {
                 break;
             }
-            else
-                index = (index + 1) % size;
+        }
+
+        if (temp->data > s->data) {
+            s->right = temp;
+            s->rbit = 1;
+            temp->left = inpre(head->left);
+            temp->right = insuc(head->left);
+        } else {
+            s->left = temp;
+            s->lbit = 1;
+            temp->left = inpre(head->left);
+            temp->right = insuc(head->left);
         }
     }
+}
 
-    // Function to search for record based on name input
-    void search_record(string name) {
-        int index1, k, flag = 0;
-        k = ascii_generator(name);
-        index1 = k % size;
-        for (int a = 0; a < size; a++) {
-            if (data[index1].key == k) {
-                flag = 1;
-                cout << "\nRecord found\n";
-                cout << "Name :: " << data[index1].name << endl;
-                cout << "Telephone :: " << data[index1].telephone << endl;
-                break;
-            }
-            else
-                index1 = (index1 + 1) % size;
-        }
-        if (flag == 0)
-            cout << "Record not found";
+node *tbt::inpre(node *m) {
+    if (m->lbit == 1) {
+        inpre(m->left);
     }
-
-    // Function to delete existing record
-    void delete_record(string name) {
-        int index1, key, flag = 0;
-        key = ascii_generator(name);
-        index1 = key % size;
-        for (int a = 0; a < size; a++) {
-            if (data[index].key == key) {
-                flag = 1;
-                data[index1].key = 0;
-                data[index1].name = " ";
-                data[index1].telephone = " ";
-                cout << "\nRecord Deleted successfully" << endl;
-                break;
-            }
-            else
-                index1 = (index1 + 1) % size;
-        }
-        if (flag == 0)
-            cout << "\nRecord not found";
+    if (m->data == temp->data && t == NULL) {
+        return head;
     }
-
-    // Function to update existing record
-    void update_record(string name) {
-        int index1, key, flag = 0;
-        key = ascii_generator(name);
-        index1 = key % size;
-        for (int a = 0; a < size; a++) {
-            if (data[index1].key == key) {
-                flag = 1;
-                break;
-            }
-            else
-                index1 = (index1 + 1) % size;
-        }
-        if (flag == 1) {
-            cout << "Enter the new telephone number :: ";
-            cin >> tele;
-            data[index1].telephone = tele;
-            cout << "\nRecord Updated successfully";
-        }
+    if (m->data == temp->data) {
+        return t;
     }
-
-    // Function to display the directory
-    void display_record() {
-        cout << "\t Name \t\t Telephone";
-        for (int a = 0; a < size; a++) {
-            if (data[a].key != 0) {
-                cout << "\n\t" << data[a].name << " \t\t\t " << data[a].telephone;
-            }
-        }
+    t = m;
+    if (m->rbit == 1) {
+        inpre(m->right);
     }
-};
+    return NULL;
+}
 
-// Main Function
+node *tbt::insuc(node *m) {
+    if (m->lbit == 1) {
+        t = m;
+        insuc(m->left);
+    }
+    if (m->data == temp->data && t == NULL) {
+        return head;
+    }
+    if (m->data == temp->data) {
+        return t;
+    }
+    if (m->rbit == 1) {
+        insuc(m->right);
+    }
+    return NULL;
+}
+
+void tbt::dis() {
+    display(head->left);
+}
+
+void tbt::display(node *m) {
+    if (m->lbit == 1) {
+        display(m->left);
+    }
+    cout << "\n" << m->data;
+    if (m->rbit == 1) {
+        display(m->right);
+    }
+}
+
+void tbt::thr() {
+    cout << "\nThreaded nodes are:";
+    thread(head->left);
+}
+
+void tbt::thread(node *m) {
+    if (m->lbit == 1) {
+        thread(m->left);
+    }
+    if (m->lbit == 0 || m->rbit == 0) {
+        cout << "\n" << m->data;
+    }
+    if (m->rbit == 1) {
+        thread(m->right);
+    }
+}
+
 int main() {
-    hashing s;
-    string name;
-    string telephone;
-    int choice;
-    bool loop = 1;
+    tbt t;
+    int ch;
+    
+    while (1) {
+        cout << "\nEnter your choice:";
+        cout << "\n1. Insert data";
+        cout << "\n2. Display all data";
+        cout << "\n3. Display threaded nodes";
+        cout << "\n4. Exit";
+        cout << "\nChoice: ";
+        cin >> ch;
 
-    // Menu driven code
-    while (loop) {
-        cout << "\n-------------------------" << endl
-             << " Telephone book Database " << endl
-             << "-------------------------" << endl
-             << "1. Create Record" << endl
-             << "2. Display Record" << endl
-             << "3. Search Record" << endl
-             << "4. Update Record" << endl
-             << "5. Delete Record" << endl
-             << "6. Exit" << endl
-             << "Enter choice :: ";
-        cin >> choice;
-
-        switch (choice) {
+        switch (ch) {
             case 1:
-                cout << "\nEnter name :: ";
-                cin >> name;
-                cout << "Enter Telephone number :: ";
-                cin >> telephone;
-                s.create_record(name, telephone);
+                t.insert();
                 break;
-
             case 2:
-                s.display_record();
+                t.dis();
                 break;
-
             case 3:
-                cout << "\nEnter the name :: ";
-                cin >> name;
-                s.search_record(name);
+                t.thr();
                 break;
-
             case 4:
-                cout << "\nEnter the name :: ";
-                cin >> name;
-                s.update_record(name);
-                break;
-
-            case 5:
-                cout << "\nEnter name to Delete :: ";
-                cin >> name;
-                s.delete_record(name);
-                break;
-
-            case 6:
-                loop = 0;
-                break;
-
+                exit(0);
             default:
-                cout << "\nYou Entered something wrong!";
-                break;
+                cout << "\nInvalid entry";
         }
     }
     return 0;
 }
 
+// Sample Inputs
+// Insert root node
 // 1
-// Enter name :: John
-// Enter Telephone number :: 1234567890
+// 50
 
+// // Insert left subtree
 // 1
-// Enter name :: Alice
-// Enter Telephone number :: 9876543210
-
+// 30
 // 1
-// Enter name :: Bob
-// Enter Telephone number :: 5555555555
+// 20
+// 1
+// 40
 
+// // Insert right subtree
+// 1
+// 70
+// 1
+// 60
+// 1
+// 80
+
+// // Display all nodes
 // 2
-// Name            Telephone
-// John            1234567890
-// Alice           9876543210
-// Bob             5555555555
 
+// // Display threaded nodes
 // 3
-// Enter the name :: Alice
-// Record found
-// Name :: Alice
-// Telephone :: 9876543210
 
+// // Exit program
 // 4
-// Enter the name :: Bob
-// Enter the new telephone number :: 6666666666
-// Record Updated successfully
-
-// 2
-// Name            Telephone
-// John            1234567890
-// Alice           9876543210
-// Bob             6666666666
-
-// 5
-// Enter name to Delete :: John
-// Record Deleted successfully
-
-// 2
-// Name            Telephone
-// Alice           9876543210
-// Bob             6666666666
-
-// 3
-// Enter the name :: John
-// Record not found
-
-// 6
