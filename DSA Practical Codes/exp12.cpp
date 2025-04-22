@@ -2,151 +2,152 @@
 // Allow user to add, delete information of employee. Display information of particular employee. 
 // If employee does not exist an appropriate message is displayed. If it is, then the system displays the employee details. 
 // Use index sequential file to maintain the data.
-
 #include <iostream>
 #include <fstream>
-#include <cstring>
+#include <string>
 using namespace std;
-
-const int MAX_NAME_LENGTH = 50;
-const int MAX_DESIGNATION_LENGTH = 50;
 
 struct Employee {
     int employeeID;
-    char name[MAX_NAME_LENGTH];
-    char designation[MAX_DESIGNATION_LENGTH];
+    string name;
+    string designation;
     double salary;
+
+    void writeToFile(ofstream& out) const {
+        out.write(reinterpret_cast<const char*>(&employeeID), sizeof(employeeID));
+        writeString(out, name);
+        writeString(out, designation);
+        out.write(reinterpret_cast<const char*>(&salary), sizeof(salary));
+    }
+
+    void readFromFile(ifstream& in) {
+        in.read(reinterpret_cast<char*>(&employeeID), sizeof(employeeID));
+        name = readString(in);
+        designation = readString(in);
+        in.read(reinterpret_cast<char*>(&salary), sizeof(salary));
+    }
+
+    static void writeString(ofstream& out, const string& str) {
+        size_t length = str.size();
+        out.write(reinterpret_cast<const char*>(&length), sizeof(length));
+        out.write(str.c_str(), length);
+    }
+
+    static string readString(ifstream& in) {
+        size_t length;
+        in.read(reinterpret_cast<char*>(&length), sizeof(length));
+        string str(length, '\0');
+        in.read(&str[0], length);
+        return str;
+    }
 };
 
-void addEmployee(fstream& file) {
-    Employee employee;
+void addEmployee() {
+    ofstream file("employee_data.dat", ios::binary | ios::app);
+    Employee e;
+
     cout << "Enter employee ID: ";
-    cin >> employee.employeeID;
+    cin >> e.employeeID;
     cin.ignore();
 
-    cout << "Enter employee name: ";
-    cin.getline(employee.name, MAX_NAME_LENGTH);
+    cout << "Enter name: ";
+    getline(cin, e.name);
 
-    cout << "Enter employee designation: ";
-    cin.getline(employee.designation, MAX_DESIGNATION_LENGTH);
+    cout << "Enter designation: ";
+    getline(cin, e.designation);
 
-    cout << "Enter employee salary: ";
-    cin >> employee.salary;
+    cout << "Enter salary: ";
+    cin >> e.salary;
 
-    file.clear(); // Clear flags
-    file.seekp(0, ios::end); // Move to end for appending
-    file.write(reinterpret_cast<char*>(&employee), sizeof(Employee));
-
-    cout << "Employee added successfully!" << endl;
+    e.writeToFile(file);
+    file.close();
+    cout << "Employee added successfully!\n";
 }
 
-void deleteEmployee(fstream& file) {
-    int employeeID;
+void displayEmployee() {
+    ifstream file("employee_data.dat", ios::binary);
+    int searchID;
     bool found = false;
-    Employee employee;
 
+    cout << "Enter employee ID to search: ";
+    cin >> searchID;
+
+    while (file.peek() != EOF) {
+        Employee e;
+        e.readFromFile(file);
+        if (e.employeeID == searchID) {
+            found = true;
+            cout << "\n--- Employee Details ---\n";
+            cout << "ID         : " << e.employeeID << endl;
+            cout << "Name       : " << e.name << endl;
+            cout << "Designation: " << e.designation << endl;
+            cout << "Salary     : " << e.salary << endl;
+            break;
+        }
+    }
+
+    if (!found) {
+        cout << "Employee not found!\n";
+    }
+
+    file.close();
+}
+
+void deleteEmployee() {
+    int deleteID;
+    bool found = false;
     cout << "Enter employee ID to delete: ";
-    cin >> employeeID;
+    cin >> deleteID;
 
-    fstream tempFile("temp.dat", ios::out | ios::binary);
-    file.clear();
-    file.seekg(0, ios::beg);
+    ifstream file("employee_data.dat", ios::binary);
+    ofstream temp("temp.dat", ios::binary);
 
-    while (file.read(reinterpret_cast<char*>(&employee), sizeof(Employee))) {
-        if (employee.employeeID != employeeID) {
-            tempFile.write(reinterpret_cast<char*>(&employee), sizeof(Employee));
+    while (file.peek() != EOF) {
+        Employee e;
+        e.readFromFile(file);
+        if (e.employeeID != deleteID) {
+            e.writeToFile(temp);
         } else {
             found = true;
         }
     }
 
     file.close();
-    tempFile.close();
+    temp.close();
 
     remove("employee_data.dat");
     rename("temp.dat", "employee_data.dat");
 
-    if (found) {
-        cout << "Employee deleted successfully!" << endl;
-    } else {
-        cout << "Employee not found!" << endl;
-    }
-
-    // Re-open file
-    file.open("employee_data.dat", ios::in | ios::out | ios::binary);
-}
-
-void displayEmployee(fstream& file) {
-    int employeeID;
-    bool found = false;
-    Employee employee;
-
-    cout << "Enter employee ID to display: ";
-    cin >> employeeID;
-
-    file.clear();
-    file.seekg(0, ios::beg);
-
-    while (file.read(reinterpret_cast<char*>(&employee), sizeof(Employee))) {
-        if (employee.employeeID == employeeID) {
-            found = true;
-            break;
-        }
-    }
-
-    if (found) {
-        cout << "\n--- Employee Details ---" << endl;
-        cout << "Employee ID     : " << employee.employeeID << endl;
-        cout << "Name            : " << employee.name << endl;
-        cout << "Designation     : " << employee.designation << endl;
-        cout << "Salary          : " << employee.salary << endl;
-    } else {
-        cout << "Employee not found!" << endl;
-    }
+    if (found)
+        cout << "Employee deleted successfully!\n";
+    else
+        cout << "Employee not found!\n";
 }
 
 int main() {
-    cout << "Name: Anjali Shirke\tBatch: B1\tRoll no. 23207" << endl;
-
-    fstream file("employee_data.dat", ios::in | ios::out | ios::binary);
-    if (!file) {
-        // If file doesn't exist, create it
-        file.open("employee_data.dat", ios::out | ios::binary);
-        file.close();
-        file.open("employee_data.dat", ios::in | ios::out | ios::binary);
-    }
-
     int choice;
+
+    cout << "Name: Anjali Shirke\tBatch: B1\tRoll No.: 23207\n";
+
     while (true) {
-        cout << "\n--- Employee Information System ---" << endl;
-        cout << "1. Add Employee" << endl;
-        cout << "2. Delete Employee" << endl;
-        cout << "3. Display Employee" << endl;
-        cout << "4. Quit" << endl;
-        cout << "Enter your choice: ";
+        cout << "\n--- Employee Information System ---\n";
+        cout << "1. Add Employee\n";
+        cout << "2. Delete Employee\n";
+        cout << "3. Display Employee\n";
+        cout << "4. Exit\n";
+        cout << "Enter choice: ";
         cin >> choice;
 
         switch (choice) {
-            case 1:
-                addEmployee(file);
-                break;
-            case 2:
-                deleteEmployee(file);
-                break;
-            case 3:
-                displayEmployee(file);
-                break;
-            case 4:
-                file.close();
-                cout << "Exiting program. Goodbye!" << endl;
-                return 0;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
+            case 1: addEmployee(); break;
+            case 2: deleteEmployee(); break;
+            case 3: displayEmployee(); break;
+            case 4: cout << "Exiting...\n"; return 0;
+            default: cout << "Invalid choice!\n";
         }
     }
-
-    return 0;
 }
+
 
 // 1
 // Enter employee ID: 101

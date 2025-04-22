@@ -23,7 +23,7 @@ public:
 // Sum of ascii value of each character in string
 int ascii_generator(string s) {
     int sum = 0;
-    for (int i = 0; s[i] != '\0'; i++)
+    for (int i = 0; i < s.length(); i++)
         sum = sum + s[i];
     return sum % 100;
 }
@@ -32,7 +32,7 @@ int ascii_generator(string s) {
 class hashing {
 private:
     node data[100]; // Size of directory -> 100
-    string n;
+    string n;   
     string tele;
     int k, index;
     int size = 100;

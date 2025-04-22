@@ -1,176 +1,213 @@
+// Problem Statement:
 // A book consists of chapters, chapters consist of sections and sections consist of
 // subsections. Construct a tree and print the nodes. Find the time and space requirements of your
-// method
+// method.
 
 #include <iostream>
-#include <stdlib.h>
 using namespace std;
 
-struct node {
-    int data;
-    node *left, *right;
-    int lbit, rbit;
+// Node structure for the tree
+struct TreeNode {
+    int data;           // Data stored in the node
+    TreeNode *left;     // Pointer to left child
+    TreeNode *right;    // Pointer to right child
+    int leftThread;     // Flag for left thread (0 = child, 1 = thread)
+    int rightThread;    // Flag for right thread (0 = child, 1 = thread)
 };
 
-class tbt {
+class ThreadedBinaryTree {
 private:
-    node *temp = NULL, *t1 = NULL, *s = NULL, *head = NULL, *t = NULL;
+    TreeNode *root;     // Root of the tree
+    TreeNode *dummy;    // Dummy node for threading
+
+    // Helper function to create a new node
+    TreeNode* createNode() {
+        TreeNode *newNode = new TreeNode;
+        cout << "Enter the data for the node: ";
+        cin >> newNode->data;
+        newNode->left = NULL;
+        newNode->right = NULL;
+        newNode->leftThread = 0;
+        newNode->rightThread = 0;
+        return newNode;
+    }
+
+    // Helper function to find inorder predecessor
+    TreeNode* findInorderPredecessor(TreeNode *current) {
+        if (current->leftThread == 1) {
+            return current->left;
+        }
+        current = current->left;
+        while (current->rightThread == 1) {
+            current = current->right;
+        }
+        return current;
+    }
+
+    // Helper function to find inorder successor
+    TreeNode* findInorderSuccessor(TreeNode *current) {
+        if (current->rightThread == 1) {
+            return current->right;
+        }
+        current = current->right;
+        while (current->leftThread == 1) {
+            current = current->left;
+        }
+        return current;
+    }
 
 public:
-    node *create();
-    void insert();
-    node *insuc(node*);
-    node *inpre(node*);
-    void dis();
-    void display(node*);
-    void thr();
-    void thread(node*);
-};
-
-node *tbt::create() {
-    node *p = new(struct node);
-    p->left = NULL;
-    p->right = NULL;
-    p->lbit = 0;
-    p->rbit = 0;
-    cout << "\n enter the data";
-    cin >> p->data;
-    return p;
-}
-
-void tbt::insert() {
-    temp = create();
-    if (head == NULL) {
-        node *p = new(struct node);
-        head = p;
-        head->left = temp;
-        head->right = head;
-        head->lbit = 1;
-        head->rbit = 0;
-        temp->left = head;
-        temp->right = head;
-        temp->lbit = 0;
-        temp->rbit = 0;
+    // Constructor
+    ThreadedBinaryTree() {
+        // Create dummy node
+        dummy = new TreeNode;
+        dummy->data = -1;
+        dummy->left = dummy;
+        dummy->right = dummy;
+        dummy->leftThread = 0;
+        dummy->rightThread = 0;
+        root = NULL;
     }
-    else {
-        t1 = head;
-        t1 = t1->left;
 
-        while (t1 != NULL) {
-            s = t1;
-            if (((temp->data) > (t1->data)) && t1->rbit == 1) {
-                t1 = t1->right;
-            }
-            else if (((temp->data) < (t1->data)) && t1->lbit == 1) {
-                t1 = t1->left;
+    // Function to insert a new node
+    void insertNode() {
+        TreeNode *newNode = createNode();
+        
+        // If tree is empty
+        if (root == NULL) {
+            root = newNode;
+            root->left = dummy;
+            root->right = dummy;
+            root->leftThread = 1;
+            root->rightThread = 1;
+            dummy->left = root;
+            return;
+        }
+
+        // Find the appropriate position for the new node
+        TreeNode *current = root;
+        TreeNode *parent = NULL;
+
+        while (current != NULL) {
+            parent = current;
+            if (newNode->data < current->data) {
+                if (current->leftThread == 0) {
+                    current = current->left;
+                }
+                else {
+                    break;
+                }
             }
             else {
-                break;
+                if (current->rightThread == 0) {
+                    current = current->right;
+                }
+                else {
+                    break;
+                }
             }
         }
-        if (temp->data > s->data) {
-            s->right = temp;
-            s->rbit = 1;
-            temp->left = inpre(head->left);
-            temp->right = insuc(head->left);
+
+        // Insert the new node
+        if (newNode->data < parent->data) {
+            newNode->left = parent->left;
+            newNode->right = parent;
+            parent->leftThread = 0;
+            parent->left = newNode;
         }
         else {
-            s->left = temp;
-            s->lbit = 1;
-            temp->left = inpre(head->left);
-            temp->right = insuc(head->left);
+            newNode->left = parent;
+            newNode->right = parent->right;
+            parent->rightThread = 0;
+            parent->right = newNode;
         }
     }
-}
 
-node *tbt::inpre(node *m) {
-    if (m->lbit == 1) {
-        inpre(m->left);
-    }
-    if (m->data == temp->data && t == NULL) {
-        return head;
-    }
-    if (m->data == temp->data) {
-        return t;
-    }
-    t = m;
-    if (m->rbit == 1) {
-        inpre(m->right);
-    }
-}
+    // Function to display all nodes in inorder traversal
+    void displayAllNodes() {
+        if (root == NULL) {
+            cout << "Tree is empty!" << endl;
+            return;
+        }
 
-node *tbt::insuc(node *m) {
-    if (m->lbit == 1) {
-        t = m;
-        insuc(m->left);
-    }
-    if (m->data == temp->data && t == NULL) {
-        return head;
-    }
-    if (m->data == temp->data) {
-        return t;
+        cout << "\nAll nodes in inorder traversal:" << endl;
+        TreeNode *current = root;
+        
+        // Find the leftmost node
+        while (current->leftThread == 0) {
+            current = current->left;
+        }
+
+        // Traverse using threads
+        while (current != dummy) {
+            cout << current->data << " ";
+            current = findInorderSuccessor(current);
+        }
+        cout << endl;
     }
 
-    if (m->rbit == 1) {
-        insuc(m->right);
-    }
-}
+    // Function to display threaded nodes
+    void displayThreadedNodes() {
+        if (root == NULL) {
+            cout << "Tree is empty!" << endl;
+            return;
+        }
 
-void tbt::dis() {
-    display(head->left);
-}
+        cout << "\nThreaded nodes:" << endl;
+        displayThreadedNodesHelper(root);
+        cout << endl;
+    }
 
-void tbt::display(node *m) {
-    if (m->lbit == 1) {
-        display(m->left);
-    }
-    cout << "\n" << m->data;
-    if (m->rbit == 1) {
-        display(m->right);
-    }
-}
+    // Helper function for displaying threaded nodes
+    void displayThreadedNodesHelper(TreeNode *node) {
+        if (node == NULL) {
+            return;
+        }
 
-void tbt::thr() {
-    cout << "\n thread are";
-    thread(head->left);
-}
+        if (node->leftThread == 1 || node->rightThread == 1) {
+            cout << node->data << " ";
+        }
 
-void tbt::thread(node *m) {
-    if (m->lbit == 1) {
-        thread(m->left);
+        if (node->leftThread == 0) {
+            displayThreadedNodesHelper(node->left);
+        }
+        if (node->rightThread == 0) {
+            displayThreadedNodesHelper(node->right);
+        }
     }
-    if (m->lbit == 0 || m->rbit == 0) {
-        cout << "\n" << m->data;
-    }
-    if (m->rbit == 1) {
-        thread(m->right);
-    }
-}
+};
 
 int main() {
-    tbt t;
-    int ch;
-    while (1) {
-        cout << "\n enter the choice";
-        cout << "\n 1.insert data";
-        cout << "\n 2.display all data";
-        cout << "\n 3.display threaded node";
-        cout << "\n 4.exit";
-        cin >> ch;
-        switch (ch) {
+    ThreadedBinaryTree tree;
+    int choice;
+
+    cout << "========== THREADED BINARY TREE ==========" << endl;
+    cout << "This program implements a threaded binary tree" << endl;
+
+    while (true) {
+        cout << "\nMenu:" << endl;
+        cout << "1. Insert a node" << endl;
+        cout << "2. Display all nodes" << endl;
+        cout << "3. Display threaded nodes" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
             case 1:
-                t.insert();
+                tree.insertNode();
                 break;
             case 2:
-                t.dis();
+                tree.displayAllNodes();
                 break;
             case 3:
-                t.thr();
+                tree.displayThreadedNodes();
                 break;
             case 4:
-                exit(0);
+                cout << "Thank you for using the program!" << endl;
+                return 0;
             default:
-                cout << "\n invalid entry";
+                cout << "Invalid choice! Please try again." << endl;
         }
     }
     return 0;

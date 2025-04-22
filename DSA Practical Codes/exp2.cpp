@@ -1,315 +1,286 @@
-// To create ADT that implements the SET concept.
-
-// a. Add (newElement) -Place a value into the set
-// b. Remove (element) Remove the value
-// c. Contains (element) Return true if element is in collection
-// d. Size () Return number of values in collection Iterator () Return an iterator used to loop
-// over collection
+// Problem Statement:
+// To create ADT that implements the SET concept with the following operations:
+// a. Add (newElement) - Place a value into the set
+// b. Remove (element) - Remove the value
+// c. Contains (element) - Return true if element is in collection
+// d. Size () - Return number of values in collection
 // e. Intersection of two sets
 // f. Union of two sets
 // g. Difference between two sets
-// h.Subset
+// h. Subset
 
 #include <iostream>
 #include <list>
-#include <cstdlib>
 using namespace std;
 
-class set {
+class Set {
 private:
-    int num;
-    int flag = 1;
+    list<int> setA;    // First set
+    list<int> setB;    // Second set
+    list<int> result;  // Temporary list for operations
 
 public:
-    list<int> l, l1, u, I, d;
-    list<int>::iterator t, t1, t2, t3, t4;
+    // Function to initialize both sets
+    void initializeSets() {
+        int sizeA, sizeB, element;
+        
+        // Initialize Set A
+        cout << "\nSET A:" << endl;
+        cout << "How many elements do you want to add in Set A: ";
+        cin >> sizeA;
+        cout << "Enter elements for Set A:" << endl;
+        for (int i = 0; i < sizeA; i++) {
+            cin >> element;
+            setA.push_back(element);
+        }
 
-    void add();
-    void delete1(int);
-    void search(int);
-    void searchB(int);
-    void display();
-    void union1();
-    void Intersection();
-    void insert();
-    void Differerence();
+        // Initialize Set B
+        cout << "\nSET B:" << endl;
+        cout << "How many elements do you want to add in Set B: ";
+        cin >> sizeB;
+        cout << "Enter elements for Set B:" << endl;
+        for (int i = 0; i < sizeB; i++) {
+            cin >> element;
+            setB.push_back(element);
+        }
+    }
+
+    // Function to add an element to a set
+    void addElement() {
+        char setChoice;
+        int element;
+        
+        cout << "In which set do you want to add element (A/B): ";
+        cin >> setChoice;
+        
+        cout << "Enter the element: ";
+        cin >> element;
+
+        if (setChoice == 'A' || setChoice == 'a') {
+            setA.push_back(element);
+            cout << "Element " << element << " added to Set A" << endl;
+        }
+        else if (setChoice == 'B' || setChoice == 'b') {
+            setB.push_back(element);
+            cout << "Element " << element << " added to Set B" << endl;
+        }
+        else {
+            cout << "Invalid set choice!" << endl;
+        }
+    }
+
+    // Function to display both sets
+    void displaySets() {
+        cout << "\nSet A: { ";
+        for (list<int>::iterator it = setA.begin(); it != setA.end(); it++) {
+            cout << *it << " ";
+        }
+        cout << "}" << endl;
+
+        cout << "Set B: { ";
+        for (list<int>::iterator it = setB.begin(); it != setB.end(); it++) {
+            cout << *it << " ";
+        }
+        cout << "}" << endl;
+    }
+
+    // Function to search for an element in both sets
+    void searchElement(int element) {
+        bool found = false;
+        
+        // Search in Set A
+        for (list<int>::iterator it = setA.begin(); it != setA.end(); it++) {
+            if (*it == element) {
+                cout << "Element " << element << " found in Set A" << endl;
+                found = true;
+                break;
+            }
+        }
+
+        // Search in Set B
+        for (list<int>::iterator it = setB.begin(); it != setB.end(); it++) {
+            if (*it == element) {
+                cout << "Element " << element << " found in Set B" << endl;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "Element " << element << " not found in either set" << endl;
+        }
+    }
+
+    // Function to delete an element from both sets
+    void deleteElement(int element) {
+        bool deleted = false;
+        
+        // Delete from Set A
+        setA.remove(element);
+        
+        // Delete from Set B
+        setB.remove(element);
+        
+        cout << "Element " << element << " deleted from both sets" << endl;
+    }
+
+    // Function to find union of two sets
+    void findUnion() {
+        result.clear();
+        
+        // Add all elements from Set A
+        for (list<int>::iterator it = setA.begin(); it != setA.end(); it++) {
+            result.push_back(*it);
+        }
+        
+        // Add elements from Set B that are not in Set A
+        for (list<int>::iterator itB = setB.begin(); itB != setB.end(); itB++) {
+            bool found = false;
+            for (list<int>::iterator itA = setA.begin(); itA != setA.end(); itA++) {
+                if (*itB == *itA) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                result.push_back(*itB);
+            }
+        }
+
+        cout << "Union of Set A and Set B: { ";
+        for (list<int>::iterator it = result.begin(); it != result.end(); it++) {
+            cout << *it << " ";
+        }
+        cout << "}" << endl;
+    }
+
+    // Function to find intersection of two sets
+    void findIntersection() {
+        result.clear();
+        
+        // Find common elements
+        for (list<int>::iterator itA = setA.begin(); itA != setA.end(); itA++) {
+            for (list<int>::iterator itB = setB.begin(); itB != setB.end(); itB++) {
+                if (*itA == *itB) {
+                    result.push_back(*itA);
+                    break;
+                }
+            }
+        }
+
+        if (result.empty()) {
+            cout << "No common elements in Set A and Set B" << endl;
+        }
+        else {
+            cout << "Intersection of Set A and Set B: { ";
+            for (list<int>::iterator it = result.begin(); it != result.end(); it++) {
+                cout << *it << " ";
+            }
+            cout << "}" << endl;
+        }
+    }
+
+    // Function to find difference between two sets (A - B)
+    void findDifference() {
+        result.clear();
+        
+        // Find elements in A that are not in B
+        for (list<int>::iterator itA = setA.begin(); itA != setA.end(); itA++) {
+            bool found = false;
+            for (list<int>::iterator itB = setB.begin(); itB != setB.end(); itB++) {
+                if (*itA == *itB) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                result.push_back(*itA);
+            }
+        }
+
+        if (result.empty()) {
+            cout << "Set A is a subset of Set B" << endl;
+        }
+        else {
+            cout << "Difference (Set A - Set B): { ";
+            for (list<int>::iterator it = result.begin(); it != result.end(); it++) {
+                cout << *it << " ";
+            }
+            cout << "}" << endl;
+        }
+    }
 };
 
-void set::insert() {
-    int n, m;
-    cout << "\nSET A:\n";
-    cout << "How many Elements You want Add in Set A:\n";
-    cin >> n;
-    cout << "Enter Elements\n";
-    for (int i = 0; i < n; i++) {
-        cin >> num;
-        l.push_back(num);
-    }
-
-    cout << "\nSET B:\n";
-    cout << "How many Elements You want Add in Set B:\n";
-    cin >> m;
-    cout << "Enter Elements\n";
-    for (int i = 0; i < m; i++) {
-        cin >> num;
-        l1.push_back(num);
-    }
-}
-
-void set::add() {
-    char c;
-    cout << "In Which Set do you want Add Element (A/B)\n";
-    cin >> c;
-    if (c == 'A' || c == 'a') {
-        cout << "Enter Elements\n";
-        cin >> num;
-        l.push_back(num);
-        cout << "\nElement Inserted\n";
-    }
-    else if (c == 'B' || c == 'b') {
-        cout << "Enter Elements\n";
-        cin >> num;
-        l1.push_back(num);
-        cout << "\nElement Inserted\n";
-    }
-    else
-        cout << "Invalid Set!!!";
-}
-
-void set::display() {
-    cout << "The Elements for Set A:\n{\t";
-    for (t = l.begin(); t != l.end(); t++) {
-        cout << *t << "\t";
-    }
-    cout << "}";
-    cout << "\n\n";
-    cout << "The Elements for Set B:\n{\t";
-    for (t1 = l1.begin(); t1 != l1.end(); t1++) {
-        cout << *t1 << "\t";
-    }
-    cout << "}";
-}
-
-void set::search(int key) {
-    for (t = l.begin(), t1 = l1.begin(); t != l.end(); t++, t1++) {
-        if (*t == key | *t1 == key) {
-            cout << "The Element is Present\n";
-            flag = 1;
-            break;
-        }
-        else
-            flag = 0;
-    }
-    if (flag == 0) {
-        cout << "The Element is not Present\n";
-    }
-}
-
-void set::delete1(int key) {
-    if (l.empty() && l1.empty()) {
-        cout << "The Set A & Set B is Empty\n";
-    }
-    else {
-        search(key);
-        if (flag == 1) {
-            l.remove(key);
-            l1.remove(key);
-            cout << "Element Deleted\n";
-        }
-        else
-            cout << "Element not Deleted\n";
-    }
-}
-
-void set::union1() {
-    int flag = 0;
-    for (t = l.begin(); t != l.end(); t++) {
-        u.push_back(*t);
-    }
-    for (t1 = l1.begin(); t1 != l1.end(); t1++) {
-        for (t2 = u.begin(); t2 != u.end(); t2++) {
-            if (*t1 == *t2) {
-                flag = 0;
-                break;
-            }
-            else
-                flag = 1;
-        }
-        if (flag == 1) {
-            u.push_back(*t1);
-        }
-    }
-
-    cout << "The Union Set of A & B is : {\t";
-    for (t2 = u.begin(); t2 != u.end(); t2++) {
-        cout << *t2 << "\t";
-    }
-    cout << "}";
-}
-
-void set::Intersection() {
-    for (t = l.begin(); t != l.end(); t++) {
-        for (t1 = l1.begin(); t1 != l1.end(); t1++) {
-            if (*t == *t1) {
-                I.push_back(*t);
-                break;
-            }
-        }
-    }
-    if (I.empty()) {
-        cout << "There is no Common element in Set A & Set B\n";
-    }
-    else {
-        cout << "The Intersection Set of A & B is : {\t";
-        for (t3 = I.begin(); t3 != I.end(); t3++) {
-            cout << *t3 << "\t";
-        }
-        cout << "}";
-    }
-}
-
-void set::Differerence() {
-    int flag = 0;
-    for (t = l.begin(); t != l.end(); t++) {
-        for (t1 = l1.begin(); t1 != l1.end(); t1++) {
-            if (*t == *t1) {
-                flag = 0;
-                break;
-            }
-            else
-                flag = 1;
-        }
-        if (flag == 1) {
-            d.push_back(*t);
-        }
-    }
-    if (d.empty()) {
-        cout << "The Set A & Set B are Equal\n";
-    }
-    else {
-        cout << "The Difference Set of A & B is : {\t";
-        for (t4 = d.begin(); t4 != d.end(); t4++) {
-            cout << *t4 << "\t";
-        }
-        cout << "}";
-    }
-}
-
 int main() {
-    set s;
-    int ch, key;
-    s.insert();
+    Set mySet;
+    int choice, element;
     
-    while (1) {
-        cout << "\n\n-----------------------------\n";
-        cout << "\nSet Theory\n";
-        cout << "\n\n-----------------------------\n";
-        cout << "1. Add Element\n";
-        cout << "2. Delete Element\n";
-        cout << "3. Search Element\n";
-        cout << "4. Display\n";
-        cout << "5. Union\n";
-        cout << "6. Intersection\n";
-        cout << "7. Difference\n";
-        cout << "8. Exit\n";
-        cout << "Enter your choice: ";
-        cin >> ch;
+    cout << "========== SET OPERATIONS ==========" << endl;
+    cout << "This program implements various operations on sets" << endl;
+    
+    // Initialize sets first
+    mySet.initializeSets();
 
-        switch (ch) {
+    while (true) {
+        cout << "\nMenu:" << endl;
+        cout << "1. Add Element" << endl;
+        cout << "2. Delete Element" << endl;
+        cout << "3. Search Element" << endl;
+        cout << "4. Display Sets" << endl;
+        cout << "5. Find Union" << endl;
+        cout << "6. Find Intersection" << endl;
+        cout << "7. Find Difference" << endl;
+        cout << "8. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
             case 1:
-                s.add();
+                mySet.addElement();
                 break;
             case 2:
-                cout << "Enter the element to delete: ";
-                cin >> key;
-                s.delete1(key);
+                cout << "Enter element to delete: ";
+                cin >> element;
+                mySet.deleteElement(element);
                 break;
             case 3:
-                cout << "Enter the element to search: ";
-                cin >> key;
-                s.search(key);
+                cout << "Enter element to search: ";
+                cin >> element;
+                mySet.searchElement(element);
                 break;
             case 4:
-                s.display();
+                mySet.displaySets();
                 break;
             case 5:
-                s.union1();
+                mySet.findUnion();
                 break;
             case 6:
-                s.Intersection();
+                mySet.findIntersection();
                 break;
             case 7:
-                s.Differerence();
+                mySet.findDifference();
                 break;
             case 8:
-                exit(0);
+                cout << "Thank you for using the program!" << endl;
+                return 0;
             default:
-                cout << "Invalid choice!\n";
+                cout << "Invalid choice! Please try again." << endl;
         }
     }
     return 0;
 }
 
 // SET A:
-// How many Elements You want Add in Set A:
-// 3
-// Enter Elements
+// How many elements do you want to add in Set A: 3
+// Enter elements for Set A:
 // 1
 // 2
 // 3
 
 // SET B:
-// How many Elements You want Add in Set B:
-// 4
-// Enter Elements
+// How many elements do you want to add in Set B: 4
+// Enter elements for Set B:
 // 2
 // 3
 // 4
 // 5
-
-// 4
-// The Elements for Set A:
-// {    1    2    3    }
-
-// The Elements for Set B:
-// {    2    3    4    5    }
-
-// 1
-// In Which Set do you want Add Element (A/B)
-// A
-// Enter Elements
-// 6
-// Element Inserted
-
-// 4
-// The Elements for Set A:
-// {    1    2    3    6    }
-
-// The Elements for Set B:
-// {    2    3    4    5    }
-
-// 5
-// The Union Set of A & B is : {    1    2    3    6    4    5    }
-
-// 6
-// The Intersection Set of A & B is : {    2    3    }
-
-// 7
-// The Difference Set of A & B is : {    1    6    }
-
-// 3
-// Enter the element to search: 4
-// The Element is Present
-
-// 2
-// Enter the element to delete: 3
-// Element Deleted
-
-// 4
-// The Elements for Set A:
-// {    1    2    6    }
-
-// The Elements for Set B:
-// {    2    4    5    }
-
-// 8

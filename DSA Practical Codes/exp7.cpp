@@ -1,141 +1,169 @@
-// You have a business with several offices; you want to lease phone lines to connect them up with each other; and the phone company 
-// charges different amounts of money to connect different pairs of cities.
-// You want a set of lines that connects all your offices with a minimum total cost. Solve the problem by suggesting appropriate data 
-// structures.
+// Problem Statement:
+// You have a business with several offices; you want to lease phone lines to connect them up with each other;
+// and the phone company charges different amounts of money to connect different pairs of cities.
+// You want a set of lines that connects all your offices with a minimum total cost.
 
 #include<iostream>
 using namespace std;
 
-class tree
-{
-    int a[20][20], l, u, w, i, j, v, e, visited[20];
+// Constants for better readability
+#define MAX_OFFICES 20
+#define INFINITY 999
+
+class MinimumSpanningTree {
+private:
+    // Graph representation using adjacency matrix
+    int graph[MAX_OFFICES][MAX_OFFICES];  // Stores connection costs between offices
+    int numOffices;                       // Total number of offices
+    int numConnections;                   // Total number of possible connections
+    bool visited[MAX_OFFICES];            // Tracks which offices are already connected
 
 public:
-    void input();
-    void display();
-    void minimum();
-};
+    // Function to get input from user
+    void getInput() {
+        cout << "\nEnter the number of offices: ";
+        cin >> numOffices;
 
-void tree::input()
-{
-    cout << "Enter the no. of branches: ";
-    cin >> v;
+        // Initialize the graph with no connections (INFINITY cost)
+        for(int i = 0; i < numOffices; i++) {
+            visited[i] = false;  // No office is visited initially
+            for(int j = 0; j < numOffices; j++) {
+                graph[i][j] = INFINITY;  // No connection means infinite cost
+            }
+        }
 
-    for(i = 0; i < v; i++)
-    {
-        visited[i] = 0;
-        for(j = 0; j < v; j++)
-        {
-            a[i][j] = 999;
+        cout << "Enter the number of possible connections: ";
+        cin >> numConnections;
+
+        // Get connection details from user
+        for(int i = 0; i < numConnections; i++) {
+            int office1, office2, cost;
+            cout << "\nConnection " << (i+1) << ":" << endl;
+            cout << "Enter first office number: ";
+            cin >> office1;
+            cout << "Enter second office number: ";
+            cin >> office2;
+            cout << "Enter connection cost: ";
+            cin >> cost;
+
+            // Store the connection cost in both directions (undirected graph)
+            graph[office1-1][office2-1] = cost;
+            graph[office2-1][office1-1] = cost;
         }
     }
 
-    cout << "\nEnter the no. of connections: ";
-    cin >> e;
+    // Function to find minimum spanning tree using Prim's algorithm
+    void findMinimumSpanningTree() {
+        int totalCost = 0;
+        visited[0] = true;  // Start with the first office
 
-    for(i = 0; i < e; i++)
-    {
-        cout << "Enter the end branches of connections: " << endl;
-        cin >> l >> u;
-        cout << "Enter the phone company charges for this connection: ";
-        cin >> w;
-        a[l-1][u-1] = a[u-1][l-1] = w;
-    }
-}
+        cout << "\nMinimum Cost Connections:" << endl;
+        cout << "------------------------" << endl;
 
-void tree::display()
-{
-    cout << "\nAdjacency matrix:";
-    for(i = 0; i < v; i++)
-    {
-        cout << endl;
-        for(j = 0; j < v; j++)
-        {
-            cout << a[i][j] << " ";
-        }
-        cout << endl;
-    }
-}
+        // We need (numOffices-1) connections to connect all offices
+        for(int connections = 0; connections < numOffices - 1; connections++) {
+            int minCost = INFINITY;
+            int office1 = -1, office2 = -1;
 
-void tree::minimum()
-{
-    int p = 0, q = 0, total = 0, min;
-    visited[0] = 1;
-
-    for(int count = 0; count < (v - 1); count++)
-    {
-        min = 999;
-        for(i = 0; i < v; i++)
-        {
-            if(visited[i] == 1)
-            {
-                for(j = 0; j < v; j++)
-                {
-                    if(visited[j] != 1)
-                    {
-                        if(min > a[i][j])
-                        {
-                            min = a[i][j];
-                            p = i;
-                            q = j;
+            // Find the minimum cost connection between visited and unvisited offices
+            for(int i = 0; i < numOffices; i++) {
+                if(visited[i]) {  // If office i is already connected
+                    for(int j = 0; j < numOffices; j++) {
+                        if(!visited[j] && graph[i][j] < minCost) {  // If office j is not connected and has lower cost
+                            minCost = graph[i][j];
+                            office1 = i;
+                            office2 = j;
                         }
                     }
                 }
             }
+
+            // Add the minimum cost connection
+            visited[office2] = true;
+            totalCost += minCost;
+            cout << "Office " << (office1 + 1) << " -> Office " << (office2 + 1) 
+                 << " : Cost = " << minCost << endl;
         }
-        visited[p] = 1;
-        visited[q] = 1;
-        total = total + min;
-        cout << "Minimum cost connection is " << (p + 1) << " -> " << (q + 1) << " with charge :" << min << endl;
+
+        cout << "\nTotal Minimum Cost to connect all offices: " << totalCost << endl;
     }
+};
 
-    cout << "The minimum total cost of connections of all branches is: " << total << endl;
-}
+int main() {
+    cout << "========== MINIMUM COST OFFICE CONNECTIONS ==========" << endl;
+    cout << "This program finds the minimum cost to connect all offices" << endl;
+    cout << "using Prim's Minimum Spanning Tree algorithm." << endl;
 
-int main()
-{
-    cout << "\nName: Anjali Shirke\tBatch: B1\tRoll No. 23207\n";
-    int ch;
-    tree t;
+    MinimumSpanningTree mst;
+    int choice;
 
-    do
-    {
-        cout << "==========PRIM'S ALGORITHM=================" << endl;
-        cout << "\n1.INPUT\n \n2.DISPLAY\n \n3.MINIMUM\n" << endl;
-        cout << "Enter your choice :" << endl;
-        cin >> ch;
+    do {
+        cout << "\nMenu:" << endl;
+        cout << "1. Enter office connection details" << endl;
+        cout << "2. Find minimum cost connections" << endl;
+        cout << "3. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-        switch(ch)
-        {
+        switch(choice) {
             case 1:
-                cout << "INPUT YOUR VALUES" << endl;
-                t.input();
+                mst.getInput();
                 break;
-
             case 2:
-                cout << "DISPLAY THE CONTENTS*" << endl;
-                t.display();
+                mst.findMinimumSpanningTree();
                 break;
-
             case 3:
-                cout << "MINIMUM*" << endl;
-                t.minimum();
+                cout << "Thank you for using the program!" << endl;
                 break;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
         }
-    } while(ch != 4);
+    } while(choice != 3);
 
     return 0;
 }
 
-// First, select option 1 (Create) from the main menu
-// Enter the following numbers one by one to create the BST:
-// Apply to exp7.cpp
-// Then you can try different operations:
-// Enter 2 to see the Inorder traversal (will show: 20 30 40 50 60 70 80)
-// Enter 3 to see the Preorder traversal (will show: 50 30 20 40 70 60 80)
-// Enter 4 to see the Postorder traversal (will show: 20 40 30 60 80 70 50)
-// Enter 5 to search for a value (try searching for 40)
-// Enter 6 to find the minimum value (will show 20)
-// Enter 7 to find the maximum value (will show 80)
-// Enter 8 to delete a node (try deleting 30)
-// When asked "Do you want to continue in the main menu (y/n):", enter y to try more operations or n to exit
+// 1  (Choose "Enter office connection details")
+
+// 5  (Enter number of offices)
+
+// 7  (Enter number of possible connections)
+
+// Connection 1:
+// 1  (First office number)
+// 2  (Second office number)
+// 10 (Connection cost)
+
+// Connection 2:
+// 1  (First office number)
+// 3  (Second office number)
+// 20 (Connection cost)
+
+// Connection 3:
+// 2  (First office number)
+// 3  (Second office number)
+// 30 (Connection cost)
+
+// Connection 4:
+// 2  (First office number)
+// 4  (Second office number)
+// 5  (Connection cost)
+
+// Connection 5:
+// 3  (First office number)
+// 4  (Second office number)
+// 15 (Connection cost)
+
+// Connection 6:
+// 3  (First office number)
+// 5  (Second office number)
+// 25 (Connection cost)
+
+// Connection 7:
+// 4  (First office number)
+// 5  (Second office number)
+// 8  (Connection cost)
+
+// 2  (Choose "Find minimum cost connections")
+
+// 3  (Choose "Exit")

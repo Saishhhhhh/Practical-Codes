@@ -69,7 +69,6 @@ void Stud::showMin() {
 }
 
 int main() {
-    cout << "Name: Anjali Shirke\tBatch: B1\tRoll no. 23207\n";
 
     int ch, cont, total = 0;
     Stud s1;

@@ -6,124 +6,143 @@
 
 
 #include<iostream>
-#include<string.h>
+#include<string>
+#include<vector>
 using namespace std;
 
-class flight {
+// Constants for better readability
+#define MAX_CITIES 10
+
+class FlightGraph {
+private:
+    int distanceMatrix[MAX_CITIES][MAX_CITIES];  // Stores distances between cities
+    vector<string> cityNames;  // Stores names of cities using vector of strings
+    int totalCities;  // Total number of cities in the graph
+
 public:
-    int am[10][10];                  // Adjacency matrix for distances
-    char city_index[10][20];          // Array for city names (fixed size to accommodate city names)
-    flight();                         // Constructor
-    int create();                     // Method to create adjacency matrix
-    void display(int city_count);     // Method to display the adjacency matrix
+    // Constructor to initialize the graph
+    FlightGraph() {
+        totalCities = 0;
+        // Initialize all distances as 0
+        for(int i = 0; i < MAX_CITIES; i++) {
+            for(int j = 0; j < MAX_CITIES; j++) {
+                distanceMatrix[i][j] = 0;
+            }
+        }
+    }
+
+    // Function to add a new city to the graph
+    int addCity(const string& cityName) {
+        // Check if city already exists
+        for(int i = 0; i < totalCities; i++) {
+            if(cityNames[i] == cityName) {
+                return i;  // Return existing city index
+            }
+        }
+        // Add new city if not exists
+        if(totalCities < MAX_CITIES) {
+            cityNames.push_back(cityName);
+            return totalCities++;
+        }
+        return -1;  // Return -1 if maximum cities reached
+    }
+
+    // Function to create the flight graph
+    void createGraph() {
+        string sourceCity;
+        string destCity;
+        int distance;
+        char choice;
+
+        do {
+            cout << "\nEnter Source City: ";
+            cin >> sourceCity;
+            cout << "Enter Destination City: ";
+            cin >> destCity;
+
+            // Add cities to graph if they don't exist
+            int sourceIndex = addCity(sourceCity);
+            int destIndex = addCity(destCity);
+
+            if(sourceIndex == -1 || destIndex == -1) {
+                cout << "Maximum number of cities reached!" << endl;
+                return;
+            }
+
+            cout << "Enter Distance (in km) between " << sourceCity << " and " << destCity << ": ";
+            cin >> distance;
+
+            // Store distance in both directions (undirected graph)
+            distanceMatrix[sourceIndex][destIndex] = distance;
+            distanceMatrix[destIndex][sourceIndex] = distance;
+
+            cout << "\nDo you want to add more connections? (y/n): ";
+            cin >> choice;
+        } while(choice == 'y' || choice == 'Y');
+    }
+
+    // Function to display the flight graph
+    void displayGraph() {
+        if(totalCities == 0) {
+            cout << "\nNo cities added to the graph yet!" << endl;
+            return;
+        }
+
+        cout << "\nFlight Distance Matrix (in km):" << endl;
+        cout << "--------------------------------" << endl;
+
+        // Print header with city names
+        cout << "\t";
+        for(int i = 0; i < totalCities; i++) {
+            cout << cityNames[i] << "\t";
+        }
+        cout << endl;
+
+        // Print distance matrix
+        for(int i = 0; i < totalCities; i++) {
+            cout << cityNames[i] << "\t";
+            for(int j = 0; j < totalCities; j++) {
+                cout << distanceMatrix[i][j] << "\t";
+            }
+            cout << endl;
+        }
+    }
 };
 
-flight::flight() {
-    int i, j;
-    // Initialize city_index with "xx" and am with 0
-    for(i = 0; i < 10; i++) {
-        strcpy(city_index[i], "xx");
-    }
-    for(i = 0; i < 10; i++) {
-        for(j = 0; j < 10; j++) {
-            am[i][j] = 0;
-        }
-    }
-}
-
-int flight::create() {
-    int city_count = 0, j, si, di, wt;
-    char s[20], d[20], c;
-
-    do {
-        cout << "\n\tEnter Source City: ";
-        cin >> s;
-        cout << "\n\tEnter Destination City: ";
-        cin >> d;
-
-        // Check if source city already exists
-        for(j = 0; j < 10; j++) {
-            if(strcmp(city_index[j], s) == 0) break;
-        }
-        if(j == 10) {  // If source city doesn't exist, add it
-            strcpy(city_index[city_count], s);
-            city_count++;
-        }
-
-        // Check if destination city already exists
-        for(j = 0; j < 10; j++) {
-            if(strcmp(city_index[j], d) == 0) break;
-        }
-        if(j == 10) {  // If destination city doesn't exist, add it
-            strcpy(city_index[city_count], d);
-            city_count++;
-        }
-
-        // Get the distance (weight) between the source and destination cities
-        cout << "\n\tEnter Distance From " << s << " And " << d << ": ";
-        cin >> wt;
-
-        // Assign the weight in the adjacency matrix
-        for(j = 0; j < 10; j++) {
-            if(strcmp(city_index[j], s) == 0) si = j;
-            if(strcmp(city_index[j], d) == 0) di = j;
-        }
-        am[si][di] = wt;
-
-        // Ask if the user wants to add more cities
-        cout << "\n\tDo you want to add more cities (y/n): ";
-        cin >> c;
-    } while(c == 'y' || c == 'Y');
-
-    return city_count;  // Return the count of cities
-}
-
-void flight::display(int city_count) {
-    int i, j;
-    cout << "\n\tDisplaying Adjacency Matrix:\n\t";
-
-    // Display the city names as headers
-    for(i = 0; i < city_count; i++) {
-        cout << "\t" << city_index[i];
-    }
-    cout << "\n";
-
-    // Display the adjacency matrix values
-    for(i = 0; i < city_count; i++) {
-        cout << "\t" << city_index[i];
-        for(j = 0; j < city_count; j++) {
-            cout << "\t" << am[i][j];
-        }
-        cout << "\n";
-    }
-}
-
 int main() {
-    flight f;
-    int n, city_count;
-    char c;
+    cout << "========== FLIGHT ROUTE GRAPH ==========" << endl;
+    cout << "This program creates a graph of flight routes between cities" << endl;
+    cout << "and displays the distance matrix between them." << endl;
+
+    FlightGraph flightGraph;
+    int choice;
+    char continueChoice;
 
     do {
-        cout << "\nName: Anjali Shirke\tBatch: B1\tRoll No. 23207\n\t*** Flight Main Menu *****";
-        cout << "\n\t1. Create\n\t2. Adjacency Matrix\n\t3. Exit";
-        cout << "\n\tEnter your choice: ";
-        cin >> n;
+        cout << "\nMenu:" << endl;
+        cout << "1. Add flight routes" << endl;
+        cout << "2. Display distance matrix" << endl;
+        cout << "3. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-        switch(n) {
+        switch(choice) {
             case 1:
-                city_count = f.create();  // Create adjacency matrix and get city count
+                flightGraph.createGraph();
                 break;
             case 2:
-                f.display(city_count);   // Display the adjacency matrix
+                flightGraph.displayGraph();
                 break;
             case 3:
-                return 0;                 // Exit the program
+                cout << "Thank you for using the program!" << endl;
+                return 0;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
         }
 
-        // Ask if the user wants to continue
-        cout << "\n\tDo you want to continue in the main menu (y/n): ";
-        cin >> c;
-    } while(c == 'y' || c == 'Y');
+        cout << "\nDo you want to continue? (y/n): ";
+        cin >> continueChoice;
+    } while(continueChoice == 'y' || continueChoice == 'Y');
 
     return 0;
 }
