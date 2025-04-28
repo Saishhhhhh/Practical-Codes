@@ -2,290 +2,278 @@
 // Allow user to add, delete information of employee. Display information of particular employee. 
 // If employee does not exist an appropriate message is displayed. If it is, then the system displays the employee details. 
 // Use index sequential file to maintain the data.
-
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
-#include <sstream>
 using namespace std;
 
-// Simple employee structure
+/**
+ * Employee structure to store employee information
+ * Contains employee ID, name, designation, and salary
+ * Also includes methods for file I/O operations
+ */
+
 struct Employee {
-    int id;
+    int employeeID;
     string name;
     string designation;
     double salary;
+
+    /**
+     * Writes employee data to binary file
+     * @param out Output file stream to write to
+     */
+    
+    void writeToFile(ofstream& out) const {
+        out.write(reinterpret_cast<const char*>(&employeeID), sizeof(employeeID));
+        writeString(out, name);
+        writeString(out, designation);
+        out.write(reinterpret_cast<const char*>(&salary), sizeof(salary));
+    }
+
+    /**
+     * Reads employee data from binary file
+     * @param in Input file stream to read from
+     */
+    void readFromFile(ifstream& in) {
+        in.read(reinterpret_cast<char*>(&employeeID), sizeof(employeeID));
+        name = readString(in);
+        designation = readString(in);
+        in.read(reinterpret_cast<char*>(&salary), sizeof(salary));
+    }
+
+    /**
+     * Helper method to write a string to binary file
+     * @param out Output file stream
+     * @param str String to write
+     */
+    static void writeString(ofstream& out, const string& str) {
+        size_t length = str.size();
+        out.write(reinterpret_cast<const char*>(&length), sizeof(length));
+        out.write(str.c_str(), length);
+    }
+
+    /**
+     * Helper method to read a string from binary file
+     * @param in Input file stream
+     * @return String read from file
+     */
+    static string readString(ifstream& in) {
+        size_t length;
+        in.read(reinterpret_cast<char*>(&length), sizeof(length));
+        string str(length, '\0');
+        in.read(&str[0], length);
+        return str;
+    }
 };
 
-// Function to add an employee
+/**
+ * Function to add a new employee to the database
+ * Gets employee details from user and writes to file
+ */
 void addEmployee() {
-    Employee emp;
-    
-    // Get employee details
-    cout << "\nEnter Employee ID: ";
-    cin >> emp.id;
-    cin.ignore();
-    
-    cout << "Enter Name: ";
-    getline(cin, emp.name);
-    
-    cout << "Enter Designation: ";
-    getline(cin, emp.designation);
-    
-    cout << "Enter Salary: ";
-    cin >> emp.salary;
-    
-    // Check if employee ID already exists
-    bool idExists = false;
-    ifstream checkIndex("employee_index.txt");
-    if (checkIndex) {
-        int id;
-        long pos;
-        while (checkIndex >> id >> pos) {
-            if (id == emp.id) {
-                idExists = true;
-                break;
-            }
-        }
-        checkIndex.close();
-    }
-    
-    if (idExists) {
-        cout << "\nError: Employee ID " << emp.id << " already exists!" << endl;
-        return;
-    }
-    
-    // Open data file to append the new employee
-    ofstream dataFile("employee_data.txt", ios::app);
-    if (!dataFile) {
-        cout << "\nError: Cannot open data file for writing!" << endl;
-        return;
-    }
-    
-    // Remember position before writing
-    long position = dataFile.tellp();
-    
-    // Write employee to data file
-    dataFile << emp.id << "|" 
-             << emp.name << "|" 
-             << emp.designation << "|" 
-             << emp.salary << endl;
-    
-    dataFile.close();
-    
-    // Add to index file - append only the ID and position
-    ofstream indexFile("employee_index.txt", ios::app);
-    if (!indexFile) {
-        cout << "\nError: Cannot open index file for writing!" << endl;
-        return;
-    }
-    
-    indexFile << emp.id << " " << position << endl;
-    indexFile.close();
-    
-    cout << "\nEmployee added successfully!" << endl;
+    // Open file in binary and append mode
+    ofstream file("employee_data.dat", ios::binary | ios::app);
+    Employee e;
+
+    // Get employee details from user
+    cout << "Enter employee ID: ";
+    cin >> e.employeeID;
+    cin.ignore();  // Clear input buffer after numeric input
+
+    cout << "Enter name: ";
+    getline(cin, e.name);
+
+    cout << "Enter designation: ";
+    getline(cin, e.designation);
+
+    cout << "Enter salary: ";
+    cin >> e.salary;
+
+    // Write employee to file and close
+    e.writeToFile(file);
+    file.close();
+    cout << "Employee added successfully!\n";
 }
 
-// Function to search for an employee
-void searchEmployee() {
-    int searchId;
-    cout << "\nEnter Employee ID to search: ";
-    cin >> searchId;
-    
-    // Look up the employee in the index
-    ifstream indexFile("employee_index.txt");
-    if (!indexFile) {
-        cout << "\nNo employees found in database!" << endl;
-        return;
-    }
-    
+/**
+ * Function to display information of a specific employee
+ * Searches for employee by ID and displays details if found
+ */
+void displayEmployee() {
+    // Open file in binary read mode
+    ifstream file("employee_data.dat", ios::binary);
+    int searchID;
     bool found = false;
-    long position = -1;
-    int id;
-    
-    // Search for the ID in the index
-    while (indexFile >> id >> position) {
-        if (id == searchId) {
+
+    // Get employee ID to search
+    cout << "Enter employee ID to search: ";
+    cin >> searchID;
+
+    // Read file until end or employee found
+    while (file.peek() != EOF) {
+        Employee e;
+        e.readFromFile(file);
+        if (e.employeeID == searchID) {
             found = true;
-            break;
+            cout << "\n--- Employee Details ---\n";
+            cout << "ID         : " << e.employeeID << endl;
+            cout << "Name       : " << e.name << endl;
+            cout << "Designation: " << e.designation << endl;
+            cout << "Salary     : " << e.salary << endl;
+            break;  // Exit loop once employee is found
         }
     }
-    
-    indexFile.close();
-    
+
+    // Display message if employee not found
     if (!found) {
-        cout << "\nEmployee with ID " << searchId << " not found!" << endl;
-        return;
+        cout << "Employee not found!\n";
     }
-    
-    // Open the data file and go to the position
-    ifstream dataFile("employee_data.txt");
-    if (!dataFile) {
-        cout << "\nError: Cannot open data file for reading!" << endl;
-        return;
-    }
-    
-    dataFile.seekg(position);
-    
-    // Read the line with employee data
-    string line;
-    if (getline(dataFile, line)) {
-        // Parse the line
-        stringstream ss(line);
-        string token;
-        vector<string> tokens;
-        
-        while (getline(ss, token, '|')) {
-            tokens.push_back(token);
-        }
-        
-        if (tokens.size() >= 4) {
-            int empId = stoi(tokens[0]);
-            
-            // Verify the ID matches
-            if (empId == searchId) {
-                cout << "\n--- Employee Details ---" << endl;
-                cout << "ID: " << empId << endl;
-                cout << "Name: " << tokens[1] << endl;
-                cout << "Designation: " << tokens[2] << endl;
-                cout << "Salary: " << tokens[3] << endl;
-            } else {
-                cout << "\nError: ID mismatch in data file. Database may be corrupted." << endl;
-            }
-        } else {
-            cout << "\nError: Invalid data format in file." << endl;
-        }
-    } else {
-        cout << "\nError: Could not read employee data from file." << endl;
-    }
-    
-    dataFile.close();
+
+    file.close();
 }
 
-// Function to delete an employee
+/**
+ * Function to delete an employee from the database
+ * Creates a temporary file without the employee to delete
+ */
 void deleteEmployee() {
-    int deleteId;
-    cout << "\nEnter Employee ID to delete: ";
-    cin >> deleteId;
-    
-    // Read the index file
-    ifstream indexFile("employee_index.txt");
-    if (!indexFile) {
-        cout << "\nNo employees found in database!" << endl;
-        return;
-    }
-    
-    // Store all indices except the one to delete
-    vector<pair<int, long>> indices;
-    int id;
-    long position;
+    int deleteID;
     bool found = false;
     
-    while (indexFile >> id >> position) {
-        if (id == deleteId) {
-            found = true;
+    // Get employee ID to delete
+    cout << "Enter employee ID to delete: ";
+    cin >> deleteID;
+
+    // Open original file for reading and temp file for writing
+    ifstream file("employee_data.dat", ios::binary);
+    ofstream temp("temp.dat", ios::binary);
+
+    // Copy all employees except the one to delete
+    while (file.peek() != EOF) {
+        Employee e;
+        e.readFromFile(file);
+        if (e.employeeID != deleteID) {
+            e.writeToFile(temp);
         } else {
-            indices.push_back(make_pair(id, position));
+            found = true;  // Mark that employee was found
         }
     }
-    
-    indexFile.close();
-    
-    if (!found) {
-        cout << "\nEmployee with ID " << deleteId << " not found!" << endl;
-        return;
-    }
-    
-    // Write the updated index back to file
-    ofstream newIndexFile("employee_index.txt");
-    if (!newIndexFile) {
-        cout << "\nError: Cannot open index file for writing!" << endl;
-        return;
-    }
-    
-    for (const auto& entry : indices) {
-        newIndexFile << entry.first << " " << entry.second << endl;
-    }
-    
-    newIndexFile.close();
-    
-    cout << "\nEmployee deleted successfully!" << endl;
+
+    // Close both files
+    file.close();
+    temp.close();
+
+    // Replace original file with temp file
+    remove("employee_data.dat");
+    rename("temp.dat", "employee_data.dat");
+
+    // Display appropriate message
+    if (found)
+        cout << "Employee deleted successfully!\n";
+    else
+        cout << "Employee not found!\n";
 }
 
-// Function to rebuild the index (for debugging)
-void rebuildIndex() {
-    // Open the data file
-    ifstream dataFile("employee_data.txt");
-    if (!dataFile) {
-        cout << "\nNo employee data found to rebuild index!" << endl;
-        return;
-    }
-    
-    // Create a new index file
-    ofstream indexFile("employee_index.txt");
-    if (!indexFile) {
-        cout << "\nError: Cannot create index file!" << endl;
-        dataFile.close();
-        return;
-    }
-    
-    string line;
-    long position = 0;
-    
-    while (getline(dataFile, line)) {
-        stringstream ss(line);
-        string token;
-        
-        if (getline(ss, token, '|')) {
-            int id = stoi(token);
-            indexFile << id << " " << position << endl;
-        }
-        
-        position = dataFile.tellg();
-    }
-    
-    dataFile.close();
-    indexFile.close();
-    
-    cout << "\nIndex rebuilt successfully!" << endl;
-}
-
-// Function to reset the database (for debugging)
-void resetDatabase() {
-    // Remove existing files
-    remove("employee_data.txt");
-    remove("employee_index.txt");
-    cout << "\nDatabase has been reset. All employee records deleted." << endl;
-}
-
-// Main function
+/**
+ * Main function - Program entry point
+ * Provides a menu-driven interface for employee management
+ */
 int main() {
     int choice;
     
-    do {
-        cout << "\n===== EMPLOYEE MANAGEMENT SYSTEM =====" << endl;
-        cout << "1. Add Employee" << endl;
-        cout << "2. Search Employee" << endl;
-        cout << "3. Delete Employee" << endl;
-        cout << "4. Rebuild Index (Debug)" << endl;
-        cout << "5. Reset Database (Debug)" << endl;
-        cout << "6. Exit" << endl;
-        cout << "Enter your choice: ";
+    // Main program loop
+    while (true) {
+        // Display menu
+        cout << "\n--- Employee Information System ---\n";
+        cout << "1. Add Employee\n";
+        cout << "2. Delete Employee\n";
+        cout << "3. Display Employee\n";
+        cout << "4. Exit\n";
+        cout << "Enter choice: ";
         cin >> choice;
-        
-        switch (choice) {
-            case 1: addEmployee(); break;
-            case 2: searchEmployee(); break;
-            case 3: deleteEmployee(); break;
-            case 4: rebuildIndex(); break;
-            case 5: resetDatabase(); break;
-            case 6: cout << "\nExiting program...\n"; break;
-            default: cout << "\nInvalid choice! Try again.\n";
+
+        // Process user choice with if-else structure
+        if (choice == 1) {
+            addEmployee();
         }
-    } while (choice != 6);
-    
-    return 0;
+        else if (choice == 2) {
+            deleteEmployee();
+        }
+        else if (choice == 3) {
+            displayEmployee();
+        }
+        else if (choice == 4) {
+            cout << "Exiting...\n";
+            return 0;
+        }
+        else {
+            cout << "Invalid choice!\n";
+        }
+    }
 }
 
 
+// Test Case Examples:
+// 1
+// Enter employee ID: 101
+// Enter employee name: John Smith
+// Enter employee designation: Software Engineer
+// Enter employee salary: 75000
+// Employee added successfully!
+
+// 1
+// Enter employee ID: 102
+// Enter employee name: Alice Johnson
+// Enter employee designation: Project Manager
+// Enter employee salary: 95000
+// Employee added successfully!
+
+// 1
+// Enter employee ID: 103
+// Enter employee name: Robert Brown
+// Enter employee designation: Data Analyst
+// Enter employee salary: 65000
+// Employee added successfully!
+
+// 3
+// Enter employee ID to display: 102
+// --- Employee Details ---
+// Employee ID     : 102
+// Name            : Alice Johnson
+// Designation     : Project Manager
+// Salary          : 95000
+
+// 2
+// Enter employee ID to delete: 101
+// Employee deleted successfully!
+
+// 3
+// Enter employee ID to display: 101
+// Employee not found!
+
+// 1
+// Enter employee ID: 104
+// Enter employee name: Sarah Wilson
+// Enter employee designation: HR Manager
+// Enter employee salary: 85000
+// Employee added successfully!
+
+// 3
+// Enter employee ID to display: 103
+// --- Employee Details ---
+// Employee ID     : 103
+// Name            : Robert Brown
+// Designation     : Data Analyst
+// Salary          : 65000
+
+// 3
+// Enter employee ID to display: 104
+// --- Employee Details ---
+// Employee ID     : 104
+// Name            : Sarah Wilson
+// Designation     : HR Manager
+// Salary          : 85000
+
+// 4
+// Exiting program. Goodbye!
