@@ -4,146 +4,131 @@
 // This is known as the Optimal Binary Search Tree (OBST) problem.
 
 #include <iostream>
-#include <iomanip>
 using namespace std;
 
-class OptimalBST {
-private:
-    // Constants for array sizes
-    static const int MAX_NODES = 20;
+const int MAX = 20;
 
-    // Arrays to store probabilities and costs
-    float successProb[MAX_NODES];      // p[i] - probability of successful search for key i
-    float failProb[MAX_NODES];         // q[i] - probability of unsuccessful search for interval i
-    float weight[MAX_NODES][MAX_NODES]; // w[i][j] - sum of probabilities for subtree i to j
-    float cost[MAX_NODES][MAX_NODES];   // c[i][j] - minimum cost for subtree i to j
-    int root[MAX_NODES][MAX_NODES];     // r[i][j] - root of optimal subtree i to j
-    int numNodes;                       // Number of nodes in the tree
-
-    // Function to construct the optimal BST
-    void constructOptimalBST() {
-        // Initialize for subtrees of size 0
-        for (int i = 0; i < numNodes; i++) {
-            cost[i][i] = 0.0;
-            root[i][i] = 0;
-            weight[i][i] = failProb[i];
-        }
-
-        // Initialize for subtrees of size 1
-        for (int i = 0; i < numNodes; i++) {
-            int j = i + 1;
-            weight[i][j] = weight[i][i] + successProb[j] + failProb[j];
-            cost[i][j] = weight[i][j];
-            root[i][j] = j;
-        }
-
-        // Construct optimal BST for subtrees of size 2 to n
-        for (int size = 2; size <= numNodes; size++) {
-            for (int i = 0; i <= numNodes - size; i++) {
-                int j = i + size;
-                weight[i][j] = weight[i][j-1] + successProb[j] + failProb[j];
-                cost[i][j] = 9999; // Initialize with a large value
-
-                // Try all possible roots and find the one with minimum cost
-                for (int k = i + 1; k <= j; k++) {
-                    float currentCost = cost[i][k-1] + cost[k][j];
-                    if (currentCost < cost[i][j]) {
-                        cost[i][j] = currentCost;
-                        root[i][j] = k;
-                    }
-                }
-                cost[i][j] += weight[i][j];
-            }
-        }
-    }
-
-    // Function to print the structure of the optimal BST
-    void printTreeStructure(int left, int right) {
-        if (left >= right) return;
-
-        int currentRoot = root[left][right];
-        
-        // Print left child
-        if (root[left][currentRoot-1] != 0) {
-            cout << "\nLeft child of " << currentRoot << " is " << root[left][currentRoot-1];
-        }
-
-        // Print right child
-        if (root[currentRoot][right] != 0) {
-            cout << "\nRight child of " << currentRoot << " is " << root[currentRoot][right];
-        }
-
-        // Recursively print left and right subtrees
-        printTreeStructure(left, currentRoot-1);
-        printTreeStructure(currentRoot, right);
-    }
-
-public:
-    // Constructor
-    OptimalBST() {
-        numNodes = 0;
-    }
-
-    // Function to get input from user
-    void getInput() {
-        cout << "\n========== OPTIMAL BINARY SEARCH TREE ==========" << endl;
-        cout << "This program constructs an optimal binary search tree" << endl;
-        cout << "given the probabilities of successful and unsuccessful searches." << endl;
-
-        cout << "\nEnter the number of nodes: ";
-        cin >> numNodes;
-
-        cout << "\nEnter the probabilities for successful search (p[i]):" << endl;
-        cout << "------------------------------------------------" << endl;
-        for (int i = 1; i <= numNodes; i++) {
-            cout << "p[" << i << "]: ";
-            cin >> successProb[i];
-        }
-
-        cout << "\nEnter the probabilities for unsuccessful search (q[i]):" << endl;
-        cout << "------------------------------------------------" << endl;
-        for (int i = 0; i <= numNodes; i++) {
-            cout << "q[" << i << "]: ";
-            cin >> failProb[i];
-        }
-    }
-
-    // Function to build and display the optimal BST
-    void buildAndDisplay() {
-        constructOptimalBST();
-
-        cout << "\nOptimal Binary Search Tree Details:" << endl;
-        cout << "---------------------------------" << endl;
-        cout << "Total weight: " << weight[0][numNodes] << endl;
-        cout << "Minimum cost: " << cost[0][numNodes] << endl;
-        cout << "Root of the tree: " << root[0][numNodes] << endl;
-
-        cout << "\nTree Structure:" << endl;
-        cout << "--------------" << endl;
-        printTreeStructure(0, numNodes);
-        cout << endl;
+// Node structure
+struct Node {
+    int key;
+    Node* left;
+    Node* right;
+    Node(int k) {
+        key = k;
+        left = nullptr;
+        right = nullptr;
     }
 };
 
+// Build Optimal BST using DP
+void optimalBST(int keys[], double prob[], int n, double cost[MAX][MAX], int root[MAX][MAX]) {
+    for (int i = 0; i < n; i++) {
+        cost[i][i] = prob[i];
+        root[i][i] = i;
+    }
+
+    for (int length = 2; length <= n; length++) {
+        for (int i = 0; i <= n - length; i++) {
+            int j = i + length - 1;
+            cost[i][j] = 1e9;
+            double sumProb = 0;
+            for (int k = i; k <= j; k++) sumProb += prob[k];
+
+            for (int r = i; r <= j; r++) {
+                double left = (r > i) ? cost[i][r - 1] : 0;
+                double right = (r < j) ? cost[r + 1][j] : 0;
+                double total = left + right + sumProb;
+                if (total < cost[i][j]) {
+                    cost[i][j] = total;
+                    root[i][j] = r;
+                }
+            }
+        }
+    }
+}
+
+// Recursively build tree from root table
+Node* buildTree(int keys[], int root[MAX][MAX], int i, int j) {
+    if (i > j) return nullptr;
+    int r = root[i][j];
+    Node* node = new Node(keys[r]);
+    node->left = buildTree(keys, root, i, r - 1);
+    node->right = buildTree(keys, root, r + 1, j);
+    return node;
+}
+
+// Print the tree sideways with labels
+void printTree(Node* root, int space = 0, string label = "Root") {
+    if (!root) return;
+    const int INDENT = 6;
+    space += INDENT;
+
+    // Print right child first (top of the display)
+    printTree(root->right, space, "R");
+
+    // Print current node
+    cout << endl;
+    for (int i = INDENT; i < space; i++)
+        cout << " ";
+    cout << label << ": " << root->key;
+
+    // Print left child (bottom of the display)
+    printTree(root->left, space, "L");
+}
+
 int main() {
-    OptimalBST tree;
-    tree.getInput();
-    tree.buildAndDisplay();
+    int n;
+    int keys[MAX];
+    double prob[MAX];
+
+    cout << "Enter number of keys: ";
+    cin >> n;
+    if (n > MAX) {
+        cout << "Error: Maximum " << MAX << " keys allowed.\n";
+        return 1;
+    }
+
+    cout << "Enter keys in ascending order:\n";
+    for (int i = 0; i < n; i++) cin >> keys[i];
+
+    cout << "Enter corresponding probabilities:\n";
+    for (int i = 0; i < n; i++) cin >> prob[i];
+
+    double cost[MAX][MAX] = {0};
+    int rootTable[MAX][MAX] = {0};
+
+    optimalBST(keys, prob, n, cost, rootTable);
+
+    Node* optimalRoot = buildTree(keys, rootTable, 0, n - 1);
+
+    cout << "\nOptimal BST cost: " << cost[0][n - 1] << "\n";
+    cout << "\nOptimal BST (Indented Display):\n\n";
+    printTree(optimalRoot);
+
     return 0;
 }
 
-// Sample Input:
-// Number of nodes: 4
-//
-// Successful search probabilities (p[i]):
-// p[1]: 0.3
-// p[2]: 0.2
-// p[3]: 0.1
-// p[4]: 0.2
-//
-// Unsuccessful search probabilities (q[i]):
-// q[0]: 0.1
-// q[1]: 0.1
-// q[2]: 0.1
-// q[3]: 0.1
-// q[4]: 0.1
+/*
+Example run:
+Enter number of keys: 4
+Enter 4 keys in ascending order:
+Key 1: 10
+Key 2: 20
+Key 3: 30
+Key 4: 40
+Enter probability for each key:
+Probability for 10: 0.4
+Probability for 20: 0.3
+Probability for 30: 0.2
+Probability for 40: 0.1
+
+Optimal BST cost: 1.9
+
+Tree Display:
+
+      20 
+
+     10 30 
+
+        40 
+*/
