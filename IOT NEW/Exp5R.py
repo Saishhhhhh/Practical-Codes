@@ -5,12 +5,12 @@ import time
 led = LED(4)
 
 for i in range(10):
-    led.on()
+    led.off()  # With inverter, off signal makes LED turn on
     print("LED IS FINALLY ON")
     
     time.sleep(1)
     
-    led.off()
+    led.on()  # With inverter, on signal makes LED turn off
     print("LED IS OFF")
     
     time.sleep(1)
