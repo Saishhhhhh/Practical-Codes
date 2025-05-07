@@ -15,11 +15,11 @@ for i in range(150):
     
     if ir_sensor.value == 0:  
         
-        led.off()
+        led.on()  # With inverter, on signal makes LED turn off
         print("OBSTACLE DETECTED - LED OFF")
     else:
         # Turn on LED when no obstacle
-        led.on()
+        led.off()  # With inverter, off signal makes LED turn on
         print("NO OBSTACLE - LED ON")
         
    
