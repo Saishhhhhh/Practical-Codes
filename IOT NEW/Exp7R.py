@@ -23,23 +23,23 @@ while True:
     key = input("Enter character: ").lower()
     print("Received:", key)
     
-    # Turn all LEDs off first
-    led_red.off()
-    led_yellow.off()
-    led_green.off()
+    # Turn all LEDs off first (with inverter, on signal makes LED off)
+    led_red.on()
+    led_yellow.on()
+    led_green.on()
     
     if key == 'r':
-        led_red.on()
+        led_red.off()  # With inverter, off signal makes LED on
     elif key == 'y':
-        led_yellow.on()
+        led_yellow.off()  # With inverter, off signal makes LED on
     elif key == 'g':
-        led_green.on()
+        led_green.off()  # With inverter, off signal makes LED on
     elif key == 'b':
         print("Green LED blinking...")
         for i in range(5):
-            led_green.on()
+            led_green.off()  # With inverter, off signal makes LED on
             time.sleep(0.5)
-            led_green.off()
+            led_green.on()  # With inverter, on signal makes LED off
             time.sleep(0.5)
         print("Blinking finished")
     else:
