@@ -19,19 +19,19 @@ while True:
     
     if number <= 100:
         # Green LED ON (other LEDs OFF) when counter <= 100
-        led_red.off()     # Red OFF
-        led_yellow.off()  # Yellow OFF
-        led_green.on()    # Green ON
+        led_red.on()      # Red OFF (with inverter, on signal turns LED off)
+        led_yellow.on()   # Yellow OFF (with inverter, on signal turns LED off)
+        led_green.off()   # Green ON (with inverter, off signal turns LED on)
     elif number > 100 and number <= 200:
         # Yellow LED ON (other LEDs OFF) when counter between 101-200
-        led_red.off()     # Red OFF
-        led_yellow.on()   # Yellow ON
-        led_green.off()   # Green OFF
+        led_red.on()      # Red OFF (with inverter, on signal turns LED off)
+        led_yellow.off()  # Yellow ON (with inverter, off signal turns LED on)
+        led_green.on()    # Green OFF (with inverter, on signal turns LED off)
     elif number > 200:
         # Red LED ON (other LEDs OFF) when counter > 200
-        led_red.on()      # Red ON
-        led_yellow.off()  # Yellow OFF
-        led_green.off()   # Green OFF
+        led_red.off()     # Red ON (with inverter, off signal turns LED on)
+        led_yellow.on()   # Yellow OFF (with inverter, on signal turns LED off)
+        led_green.on()    # Green OFF (with inverter, on signal turns LED off)
     
     # Increment counter
     number = number + 1
