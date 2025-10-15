@@ -1,0 +1,65 @@
+mongosh -  Type this in your terminal and start the below queries
+
+use DYPIEMR
+
+show collections
+
+db.createCollection("Teachers")
+
+db.createCollection("Students")
+
+db.Teachers.insertMany([
+{ Tname: "Praveen", dno: 1, dname: "COMP", experience: 5, salary: 12008, date_of_joining: "2018-06-15" }, 
+{ Tname: "Anita", dno: 2, dname: "IT", experience: 4, salary: 9600, date_of_joining: "2019-07-12" },
+{ Tname: "Rahul", dno: 3, dname: "E&TC", experience: 6, salary: 15680, date_of_joining: "2016-03-22" },
+{ Tname: "Sanjay", dno: 4, dname: "COMP", experience: 8, salary: 18680, date_of_joining: "2015-01-10" }
+])
+
+db.Students.insertMany([
+{ Sname: "Saish", roll_no: 1, class: "SE"},
+{ Sname: "xyz", roll_no: 2, class: "TE" }, 
+{ Sname: "Amit", roll_no: 3, class: "BE" }
+])
+
+db.Teachers.find()
+
+db.Teachers.find({ dname: "COMP" })
+
+db.Teachers.find({ dname: { $in: ["COMP", "IT", "E&TC"] } } )
+
+db.Teachers.find({
+dname: { $in: ["COMP", "IT", "E&TC"] },
+salary: { $gte: 10000 }
+})
+
+db.Students.find({
+$or:[{ roll_no: 2 },{sname: "xyz" }]})
+
+db.Teachers.updateOne(
+{Tname: "Praveen"},
+{$set: { experience: 10 } },
+{upsert: true }
+)
+
+db.Teachers.updateMany(
+{ dname: "IT" },
+{ $set: { dname: "COMP" } }
+)
+
+db.Teachers.find({},{ Tname: 1, experience: 1, _id: 0 })
+
+db.createCollection("Department")
+
+db.Department.save({dept_id: 1, dname: "COMP"})
+
+db.Department.insertOne({ dept_id: 1, dname: "COMP" })
+
+db.Teachers.updateOne(
+{ Tname: "Praveen" },
+{ $set: { dname: "IT" } },
+{ upsert: true }
+)
+
+db.Teachers.deleteMany({dname: "IT" })
+
+db.Teachers.find().sort({ Tname: 1 }).limit(3).pretty()
