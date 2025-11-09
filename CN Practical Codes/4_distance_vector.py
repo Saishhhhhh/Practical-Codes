@@ -1,77 +1,165 @@
 import json
 import sys
-from copy import deepcopy
 
+# A very large number to represent infinity (no direct connection)
 INFINITY = 10**9
 
+
+# ------------------------------------------
+# Step 1: Load the network topology from JSON file
+# ------------------------------------------
 def load_topology(path):
+    # Open and read the JSON file
     with open(path, "r") as f:
         topo = json.load(f)
+
+    # Extract the node (router) names and link information
     nodes = topo["nodes"]
     edges = topo["links"]
-    graph = {n: {} for n in nodes}
-    for u, v, w in edges:
+
+    # Create an empty graph structure
+    graph = {}
+    for n in nodes:
+        graph[n] = {}
+
+    # Fill in the connection details (both directions, since undirected)
+    for link in edges:
+        u, v, w = link  # u = source, v = destination, w = cost
         graph[u][v] = w
         graph[v][u] = w
+
     return nodes, graph
 
+
+# ------------------------------------------
+# Step 2: Initialize distance and next-hop tables
+# ------------------------------------------
 def initialize_tables(nodes, graph):
-    # distance vector tables: dist[node][dest] = cost, next_hop[node][dest] = next-hop
-    dist = {n: {m: INFINITY for m in nodes} for n in nodes}
-    next_hop = {n: {m: None for m in nodes} for n in nodes}
+    # Create two tables:
+    # dist[node][dest] = cost
+    # next_hop[node][dest] = next router to reach destination
+
+    dist = {}
+    next_hop = {}
+
+    # Initialize all distances to INFINITY and next hops to None
+    for n in nodes:
+        dist[n] = {}
+        next_hop[n] = {}
+        for m in nodes:
+            dist[n][m] = INFINITY
+            next_hop[n][m] = None
+
+    # Distance to itself = 0
     for n in nodes:
         dist[n][n] = 0
+
+    # For directly connected neighbors, use their link cost
     for u in nodes:
-        for v, w in graph[u].items():
-            dist[u][v] = w
+        for v in graph[u]:
+            dist[u][v] = graph[u][v]
             next_hop[u][v] = v
+
     return dist, next_hop
 
+
+# ------------------------------------------
+# Step 3: Simulate the Distance Vector Routing Process
+# ------------------------------------------
 def simulate_distance_vector(nodes, graph, max_rounds=100):
     dist, next_hop = initialize_tables(nodes, graph)
     round_no = 0
+
+    # Keep updating routing tables until no more changes
     while True:
         changed = False
         round_no += 1
-        # simulate each node sending its vector to neighbors and neighbors updating
+
+        # Each router sends its table to all neighbors
         for u in nodes:
-            # u sends its dist[u] to all neighbors
             for neighbor in graph[u]:
-                # neighbor updates its table using u's vector
+                # Each neighbor updates its own table using info from u
                 for dest in nodes:
-                    via_u_cost = dist[u][dest] + graph[neighbor][u]  # cost neighbor->u + u->dest
+                    # cost(neighbor -> dest) = cost(neighbor -> u) + cost(u -> dest)
+                    via_u_cost = dist[u][dest] + graph[neighbor][u]
+
+                    # If this new path is cheaper, update neighbor's table
                     if via_u_cost < dist[neighbor][dest]:
                         dist[neighbor][dest] = via_u_cost
-                        next_hop[neighbor][dest] = u if next_hop[neighbor][u] is None else next_hop[neighbor][u]
+
+                        # Set next hop for the neighbor
+                        if next_hop[neighbor][u] is None:
+                            next_hop[neighbor][dest] = u
+                        else:
+                            next_hop[neighbor][dest] = next_hop[neighbor][u]
+
                         changed = True
+
+        # Stop if no changes or maximum rounds reached
         if not changed or round_no >= max_rounds:
             break
+
     return dist, next_hop, round_no
 
-def print_routing_tables(nodes, dist, next_hop):
-    for n in nodes:
-        print(f"\nRouting table for {n}")
-        print(f"{'Destination':>12} {'Cost':>8} {'NextHop':>8}")
-        for dest in sorted(nodes):
-            cost = dist[n][dest]
-            cost_str = "∞" if cost >= INFINITY else str(cost)
-            nh = next_hop[n][dest] if next_hop[n][dest] is not None else "-"
-            print(f"{dest:>12} {cost_str:>8} {nh:>8}")
 
+# ------------------------------------------
+# Step 4: Print the Routing Tables
+# ------------------------------------------
+def print_routing_tables(nodes, distance_table, next_hop_table):
+    """
+    Prints the routing table for each node in the network.
+    """
+
+    # Loop through every node to print its routing table
+    for node in nodes:
+        print("\nRouting Table for", node)
+        print("Destination    Cost    Next Hop")
+        print("--------------------------------")
+
+        # Loop through all possible destinations
+        for destination in sorted(nodes):
+            cost = distance_table[node][destination]  # cost to reach destination
+            next_hop = next_hop_table[node][destination]  # next hop to reach destination
+
+            # If cost is very large, show infinity symbol
+            if cost >= INFINITY:
+                cost_display = "∞"
+            else:
+                cost_display = str(cost)
+
+            # If there is no next hop, display a dash
+            if next_hop is None:
+                next_hop = "-"
+
+            # Print destination, cost, and next hop in simple format
+            print(f"{destination:12} {cost_display:8} {next_hop:8}")
+
+        print("--------------------------------")
+
+
+# ------------------------------------------
+# Step 5: Reconstruct Path between Source and Destination
+# ------------------------------------------
 def reconstruct_path_from_dv(source, dest, next_hop):
+    # If source and destination are same
     if source == dest:
         return [source]
+
     path = [source]
-    cur = source
-    visited = set([cur])
-    while cur != dest:
-        nh = next_hop[cur][dest]
+    current = source
+    visited = set([current])
+
+    # Follow next hops until we reach destination
+    while current != dest:
+        nh = next_hop[current][dest]
         if nh is None or nh in visited:
             return None  # no path or loop detected
         path.append(nh)
         visited.add(nh)
-        cur = nh
+        current = nh
+
     return path
+
 
 def main():
     if len(sys.argv) < 2:

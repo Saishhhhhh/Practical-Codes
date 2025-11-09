@@ -1,35 +1,40 @@
 import socket
-import os
-def start_client(server_ip='127.0.0.1', server_port=12345, filename='testfile.txt'):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((server_ip, server_port))
-        
-        # 1. Send greeting
-        s.sendall(b'Hello')
-        
-        # Receive server reply
-        data = s.recv(1024)
-        print('Server says:', data.decode())
-        
-        # 2. Send file info (filename, filesize)
-        filesize = os.path.getsize(filename)
-        file_info = f"{filename},{filesize}"
-        s.sendall(file_info.encode())
 
-        # Wait for server OK
-        ack = s.recv(1024)
-        if ack != b'OK':
-            print('Server did not acknowledge file info.')
-            return
-        # 3. Send file data
-        with open(filename, 'rb') as f:
-            while True:
-                bytes_read = f.read(4096)
-                if not bytes_read:
-                    break
-                s.sendall(bytes_read)
-        
-        print(f'File {filename} sent successfully.')
+def main():
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-if __name__ == '__main__':
-    start_client()
+    host = '127.0.0.1'
+    port = 7000
+
+    client_socket.connect((host, port))
+    print("✅ Connected to server")
+
+    # -------------------------
+    # Part 1: Hello Message
+    # -------------------------
+    message = "Hello Server!"
+    client_socket.send(message.encode())
+    print("✅ Sent:", message)
+
+    reply = client_socket.recv(1024).decode()
+    print("📩 Server replied:", reply)
+
+    # -------------------------
+    # Part 2: File Transfer
+    # -------------------------
+    print("📄 Receiving file...")
+
+    data = client_socket.recv(4096)
+
+    if data.decode(errors="ignore") == "File not found!":
+        print("❌ Server: File not found!")
+    else:
+        with open("received_testfile.txt", "wb") as f:
+            f.write(data)
+        print("✅ File received and saved as received_testfile.txt")
+
+    client_socket.close()
+    print("✅ Connection closed")
+
+if __name__ == "__main__":
+    main()

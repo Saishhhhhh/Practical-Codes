@@ -1,18 +1,32 @@
 import socket
 
-def tcp_server(host='127.0.0.1', port=65432):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((host, port))
-        s.listen()
-        print(f"TCP Server listening on {host}:{port}...")
-        conn, addr = s.accept()
-        with conn:
-            print(f"Connected by {addr}")
-            while True:
-                data = conn.recv(1024)
-                if not data:
-                    break
-                print("Received:", data.decode())
-                conn.sendall(data)  # Echo back
-if __name__ == '__main__':
-    tcp_server()
+# Create a socket object
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# AF_INET → IPv4
+# SOCK_STREAM → TCP (reliable, connection-oriented)
+
+# Bind server to host and port
+host = '127.0.0.1'   # localhost
+port = 5000
+server_socket.bind((host, port))
+
+# Listen for incoming connections
+server_socket.listen(1) # 1 is backlog (how many clients can wait in queue)
+print("✅ Server is listening on port", port)
+
+# Accept a connection
+client_socket, client_address = server_socket.accept()
+print("✅ Connection received from:", client_address)
+
+# Receive message from client
+message = client_socket.recv(1024).decode()  #receive up to 1024 bytes
+print("📩 Client says:", message)
+
+# Send response back to client
+client_socket.send("Hello from server!".encode())
+
+# Close the connection
+client_socket.close()
+server_socket.close()
+print("✅ Connection closed")

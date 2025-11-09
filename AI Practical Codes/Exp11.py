@@ -1,3 +1,6 @@
+# Implement a solution for a Constraint Satisfaction Problem using Branch and Bound and
+# Backtracking for n-queens problem or a graph coloring problem.
+
 def is_safe_branch_and_bound(assignment, row, col):
     for r in range(row):
         c = assignment[r]

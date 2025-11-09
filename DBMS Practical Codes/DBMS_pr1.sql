@@ -16,7 +16,8 @@ CREATE TABLE Customer (
   cust_city VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE Account (acc_no INT PRIMARY KEY,
+CREATE TABLE Account (
+  acc_no INT PRIMARY KEY,
   branch_name VARCHAR(50) NOT NULL,
   balance DECIMAL(12,2) CHECK (balance >= 0),
   FOREIGN KEY (branch_name) REFERENCES Branch(branch_name)
@@ -112,7 +113,7 @@ DELETE FROM Loan WHERE amount BETWEEN 1300 AND 1500;
 DELETE FROM Branch WHERE branch_city='Nigdi'; 
 
 -- Q16 Create synonym for customer as cust 
-SELECT * FROM Customer AS cust;
+CREATE SYNONYM cust FOR customer;
 
 -- Q17 Create sequence roll_seq & use in student table
 CREATE TABLE Student (

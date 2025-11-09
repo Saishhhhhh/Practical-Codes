@@ -1,12 +1,21 @@
 import socket
-def tcp_client(host='127.0.0.1', port=65432):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((host, port))
-        message = "Hello TCP Server!"
-        print(f"Sending: {message}")
-        s.sendall(message.encode())
-        data = s.recv(1024)
-        print('Received from server:', data.decode())
 
-if __name__ == '__main__':
-    tcp_client()
+# Create a socket object
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Server address
+host = '127.0.0.1'
+port = 5000
+
+# Connect to server
+client_socket.connect((host, port))
+
+# Send message to server
+client_socket.send("Hello from client!".encode())
+
+# Receive response
+response = client_socket.recv(1024).decode()
+print("📩 Server says:", response)
+
+# Close socket
+client_socket.close()

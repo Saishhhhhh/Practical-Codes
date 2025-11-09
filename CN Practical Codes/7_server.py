@@ -1,32 +1,34 @@
 import socket
 import os
 
-# Server settings
-SERVER_IP = "0.0.0.0"
+SERVER_IP = "127.0.0.1"
 SERVER_PORT = 5001
-BUFFER_SIZE = 4096
-SAVE_DIR = "received_files"
 
-os.makedirs(SAVE_DIR, exist_ok=True)
 
-# Create UDP socket
+os.makedirs("received_files", exist_ok=True)
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_socket.bind((SERVER_IP, SERVER_PORT))
 
-print(f"UDP Server listening on {SERVER_IP}:{SERVER_PORT}...")
+print(f"✅ UDP Server listening on {SERVER_IP}:{SERVER_PORT}...")
 
 while True:
-    # Receive file name
-    filename, client_addr = server_socket.recvfrom(BUFFER_SIZE)
+    # Receive filename
+    filename, client_addr = server_socket.recvfrom(4096)
     filename = filename.decode()
-    print(f"Receiving file: {filename} from {client_addr}")
+    print(f"📩 Receiving: {filename}")
 
-    # Open file for writing
-    with open(os.path.join(SAVE_DIR, filename), "wb") as f:
+    # Send ACK to start data transmission
+    server_socket.sendto(b"OK", client_addr)
+
+    # Create file to store data
+    file_path = os.path.join("received_files", filename)
+
+    with open(file_path, "wb") as f:
         while True:
-            data, addr = server_socket.recvfrom(BUFFER_SIZE)
+            data, addr = server_socket.recvfrom(4096)
             if data == b"EOF":
                 break
             f.write(data)
 
-    print(f"File {filename} received successfully!\n")
+    print(f"✅ File saved: {file_path}\n")

@@ -1,57 +1,81 @@
-from queue import PriorityQueue
-n = int(input("Number of edges: "))
-graph = {}
+# Implement A star (A*) Algorithm for any game search problem.
 
-for _ in range(n):
-    u, v, cost = input("Edge (u v cost): ").split()
-    cost = float(cost)
-    graph.setdefault(u, []).append((v, cost))
-    graph.setdefault(v, []).append((u, cost))  # undirected
+# ===============================================
+# A* Search Algorithm (Beginner Friendly Version)
+# ===============================================
 
-h = {}
-m = int(input("Number of heuristic values: "))
-print("Enter heuristic (node value):")
-for _ in range(m):
-    node, val = input().split()
+from queue import PriorityQueue  # Used to get the node with the lowest cost
+
+# ---------- Step 1: Input Graph ----------
+graph = {}  # Dictionary to store the graph
+
+# Number of edges
+n = int(input("Enter number of edges: "))
+
+# Take each edge input
+for i in range(n):
+    u, v, cost = input(f"Enter edge {i+1} (u v cost): ").split()
+    cost = float(cost)  # Convert cost to a number
+
+    # Add the edge to the graph (since it's undirected, add both ways)
+    if u not in graph:
+        graph[u] = []
+    if v not in graph:
+        graph[v] = []
+    graph[u].append((v, cost))
+    graph[v].append((u, cost))
+
+# ---------- Step 2: Input Heuristic Values ----------
+h = {}  # Heuristic dictionary
+m = int(input("Enter number of heuristic values: "))
+
+print("Enter heuristic values in format: node value")
+for i in range(m):
+    node, val = input(f"Heuristic {i+1}: ").split()
     h[node] = float(val)
 
-start = input("Start node: ")
-goal = input("Goal node: ")
+# ---------- Step 3: Input Start and Goal ----------
+start = input("Enter start node: ").strip()
+goal = input("Enter goal node: ").strip()
+
+
+# ---------- Step 4: Define A* Search Function ----------
+from queue import PriorityQueue
 
 def a_star(graph, start, goal, h):
     open_set = PriorityQueue()
     open_set.put((0, start))
     came_from = {}
-    g_score = {node: float('inf') for node in graph}
-    g_score[start] = 0
-    f_score = {node: float('inf') for node in graph}
-    f_score[start] = h.get(start, 0)
+    g_score = {start: 0}
 
     while not open_set.empty():
         current = open_set.get()[1]
-
         if current == goal:
-            path = []
+            path = [goal]
             while current in came_from:
-                path.append(current)
                 current = came_from[current]
-            path.append(start)
+                path.append(current)
             return path[::-1]
 
         for neighbor, cost in graph.get(current, []):
-            tentative_g = g_score[current] + cost
-            if tentative_g < g_score.get(neighbor, float('inf')):
+            new_cost = g_score[current] + cost
+            if new_cost < g_score.get(neighbor, float('inf')):
                 came_from[neighbor] = current
-                g_score[neighbor] = tentative_g
-                f_score[neighbor] = tentative_g + h.get(neighbor, 0)
-                open_set.put((f_score[neighbor], neighbor))
+                g_score[neighbor] = new_cost
+                priority = new_cost + h.get(neighbor, 0)
+                open_set.put((priority, neighbor))
+
     return None
 
+# ---------- Step 6: Run A* and Show Result ----------
 path = a_star(graph, start, goal, h)
+
 if path:
-    print("Path:", " -> ".join(path))
+    print("\nShortest Path Found:")
+    print(" -> ".join(path))
 else:
-    print("No path found")
+    print("\nNo path found between", start, "and", goal)
+
 
 # Number of edges: 8
 # Edge (u v cost): A B 1

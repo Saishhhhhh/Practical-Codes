@@ -1,55 +1,110 @@
+# Implement Alpha-Beta Tree search for any game search problem.
+
 import math
 
-def check_winner(b):
-    wins = [(0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6)]
-    for x,y,z in wins:
-        if b[x]==b[y]==b[z]!=" ": return b[x]
-    return "Draw" if " " not in b else None
+# ---------- Check if someone has won ----------
+def check_winner(board):
+    winning_combinations = [
+        (0,1,2), (3,4,5), (6,7,8),  # rows
+        (0,3,6), (1,4,7), (2,5,8),  # columns
+        (0,4,8), (2,4,6)             # diagonals
+    ]
+    for x, y, z in winning_combinations:
+        if board[x] == board[y] == board[z] != " ":
+            return board[x]   # Return 'X' or 'O'
+    # If no empty spots left, it's a draw
+    if " " not in board:
+        return "Draw"
+    return None  # Game still going
 
-def alpha_beta(b, depth, is_max, alpha, beta):
-    w = check_winner(b)
-    if w=="X": return 10-depth
-    if w=="O": return depth-10
-    if w=="Draw": return 0
-    if is_max:
-        val=-math.inf
+# ---------- Alpha-Beta Algorithm ----------
+def alpha_beta(board, depth, is_maximizing, alpha, beta):
+    winner = check_winner(board)
+
+    # Base cases (end of recursion)
+    if winner == "X":
+        return 10 - depth
+    if winner == "O":
+        return depth - 10
+    if winner == "Draw":
+        return 0
+
+    # Maximizing player (AI = X)
+    if is_maximizing:
+        best_value = -math.inf
         for i in range(9):
-            if b[i]==" ":
-                b[i]="X"; val=max(val,alpha_beta(b,depth+1,0,alpha,beta)); b[i]=" "
-                alpha=max(alpha,val)
-                if beta<=alpha: break
-        return val
+            if board[i] == " ":
+                board[i] = "X"
+                value = alpha_beta(board, depth + 1, False, alpha, beta)
+                board[i] = " "
+                best_value = max(best_value, value)
+                alpha = max(alpha, best_value)
+                if beta <= alpha:
+                    break  # Prune branch
+        return best_value
+
+    # Minimizing player (Human = O)
     else:
-        val=math.inf
+        best_value = math.inf
         for i in range(9):
-            if b[i]==" ":
-                b[i]="O"; val=min(val,alpha_beta(b,depth+1,1,alpha,beta)); b[i]=" "
-                beta=min(beta,val)
-                if beta<=alpha: break
-        return val
+            if board[i] == " ":
+                board[i] = "O"
+                value = alpha_beta(board, depth + 1, True, alpha, beta)
+                board[i] = " "
+                best_value = min(best_value, value)
+                beta = min(beta, best_value)
+                if beta <= alpha:
+                    break  # Prune branch
+        return best_value
 
-def best_move(b):
-    m,v=-1,-math.inf
+# ---------- Choose the best move for AI ----------
+def best_move(board):
+    best_val = -math.inf
+    move = -1
     for i in range(9):
-        if b[i]==" ":
-            b[i]="X"; val=alpha_beta(b,0,0,-math.inf,math.inf); b[i]=" "
-            if val>v: v,m=val,i
-    return m
+        if board[i] == " ":
+            board[i] = "X"
+            move_val = alpha_beta(board, 0, False, -math.inf, math.inf)
+            board[i] = " "
+            if move_val > best_val:
+                best_val = move_val
+                move = i
+    return move
 
-def show(b):
-    for i in range(0,9,3): print(b[i:i+3])
+# ---------- Display Board ----------
+def display(board):
+    print()
+    for i in range(0, 9, 3):
+        print(" | ".join(board[i:i+3]))
+        if i < 6:
+            print("-" * 5)
+    print()
 
-b=[" "]*9
-print("You=O, AI=X. Positions 0-8.")
-while not check_winner(b):
-    p=int(input("Move: "))
-    if b[p]!=" ": continue
-    b[p]="O"
-    if check_winner(b): break
-    b[best_move(b)]="X"
-    show(b)
+# ---------- Main Game Loop ----------
+board = [" "] * 9
+print("You = O, AI = X")
+print("Board positions: 0 1 2 | 3 4 5 | 6 7 8")
 
-print("Result:",check_winner(b))
+while not check_winner(board):
+    display(board)
+    move = int(input("Your move (0-8): "))
+
+    # Validate move
+    if board[move] != " ":
+        print("Spot taken! Try again.")
+        continue
+
+    board[move] = "O"
+    if check_winner(board):
+        break
+
+    ai_move = best_move(board)
+    board[ai_move] = "X"
+
+winner = check_winner(board)
+display(board)
+print("Result:", winner)
+
 
 # You=O, AI=X. Positions 0-8.
 # Move: 0

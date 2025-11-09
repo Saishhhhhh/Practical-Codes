@@ -7,6 +7,7 @@ def selection_sort(arr):
                 min_idx = j
         arr[i], arr[min_idx] = arr[min_idx], arr[i]
     print("Sorted array:", arr)
+
 def prim_mst(graph):
     n = len(graph)
     selected = [False] * n
@@ -31,6 +32,7 @@ def prim_mst(graph):
         selected[y] = True
         edges += 1
     print("Total weight of MST:", mst_weight)
+
 def find_parent(parent, i):
     while parent[i] != i:
         i = parent[i]
@@ -69,6 +71,7 @@ def kruskal_mst(graph):
     for u, v, w in mst_edges:
         print(f"{u} - {v} : {w}")
     print("Total weight of MST:", mst_weight)
+    
 def main():
     while True:
         print("\n=== Menu ===")

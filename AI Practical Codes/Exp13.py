@@ -1,36 +1,39 @@
-import sys
-
 def dijkstra(graph, start_vertex):
-    V = len(graph)
-    visited = [False] * V
-    distance = [sys.maxsize] * V
-    distance[start_vertex] = 0
+    V = len(graph)  # Total number of vertices
+    visited = [False] * V  # Keep track of visited vertices
+    distance = [float('inf')] * V  # Set all distances to infinity
+    distance[start_vertex] = 0  # Distance to start vertex is 0
 
     for _ in range(V):
-        min_dist = sys.maxsize
+        # Step 1: Pick the unvisited vertex with the smallest distance
+        min_dist = float('inf')
         min_index = -1
 
-        # Find vertex with minimum distance not yet visited
         for i in range(V):
             if not visited[i] and distance[i] < min_dist:
                 min_dist = distance[i]
                 min_index = i
 
         if min_index == -1:
-            break  # All remaining vertices are unreachable
+            break  # Remaining vertices are unreachable
 
         u = min_index
         visited[u] = True
 
-        # Update distances of adjacent vertices
+        # Step 2: Update distances to adjacent vertices
         for v in range(V):
             if graph[u][v] != 0 and not visited[v]:
-                if distance[v] > distance[u] + graph[u][v]:
-                    distance[v] = distance[u] + graph[u][v]
+                new_distance = distance[u] + graph[u][v]
+                if new_distance < distance[v]:
+                    distance[v] = new_distance
 
+    # Step 3: Print shortest distances
     print(f"\nShortest distances from vertex {start_vertex}:")
     for i in range(V):
-        print(f"To vertex {i}: {distance[i] if distance[i] != sys.maxsize else '∞'}")
+        if distance[i] == float('inf'):
+            print(f"To vertex {i}: ∞")
+        else:
+            print(f"To vertex {i}: {distance[i]}")
 
 
 def menu():
@@ -68,19 +71,5 @@ def menu():
             print("Invalid choice. Please enter 1 or 2.")
 
 
-# Run the menu
+# Run the program
 menu()
-
-# Enter your choice (1-2): 1
-# Enter number of vertices: 3
-# Enter the adjacency matrix (0 for no edge):
-# Weight from 0 to 0: 0
-# Weight from 0 to 1: 2
-# Weight from 0 to 2: 3
-# Weight from 1 to 0: 4
-# Weight from 1 to 1: 6
-# Weight from 1 to 2: 3
-# Weight from 2 to 0: 2
-# Weight from 2 to 1: 1
-# Weight from 2 to 2: 3
-# Enter starting vertex: 0
