@@ -1,3 +1,5 @@
+# Implement Greedy search algorithm for any of the following application: Dijkstra's Minimal Spanning Tree Algorithm
+
 def dijkstra(graph, start_vertex):
     V = len(graph)  # Total number of vertices
     visited = [False] * V  # Keep track of visited vertices
@@ -73,3 +75,34 @@ def menu():
 
 # Run the program
 menu()
+
+
+# Enter your choice (1-2): 1
+# Enter number of vertices: 5
+# Enter the adjacency matrix (0 for no edge):
+# Weight from 0 to 0: 0
+# Weight from 0 to 1: 10
+# Weight from 0 to 2: 5
+# Weight from 0 to 3: 2
+# Weight from 0 to 4: 0
+# Weight from 1 to 0: 10
+# Weight from 1 to 1: 0
+# Weight from 1 to 2: 0
+# Weight from 1 to 3: 0
+# Weight from 1 to 4: 1
+# Weight from 2 to 0: 5
+# Weight from 2 to 1: 0
+# Weight from 2 to 2: 0
+# Weight from 2 to 3: 3
+# Weight from 2 to 4: 0
+# Weight from 3 to 0: 2
+# Weight from 3 to 1: 0
+# Weight from 3 to 2: 3
+# Weight from 3 to 3: 0
+# Weight from 3 to 4: 4
+# Weight from 4 to 0: 0
+# Weight from 4 to 1: 1
+# Weight from 4 to 2: 0
+# Weight from 4 to 3: 4
+# Weight from 4 to 4: 0
+# Enter starting vertex: 0

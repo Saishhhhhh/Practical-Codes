@@ -15,8 +15,8 @@ try:
     subnets = list(network.subnets(new_prefix=new_prefix))
     for i, subnet in enumerate(subnets, start=1):
         print(f"Subnet {i}: {subnet}")
-        print(f"   Network Addr : {subnet.network_address}")
-        print(f"   Broadcast    : {subnet.broadcast_address}")
+        print(f"   Network Addr : {subnet.network_address}")  #First address in a subnet
+        print(f"   Broadcast    : {subnet.broadcast_address}") #Last address in a subnet
         print(f"   Mask         : {subnet.netmask}")
         print(f"   Usable Hosts : {subnet.num_addresses - 2}\n")
 

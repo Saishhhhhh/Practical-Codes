@@ -1,3 +1,8 @@
+# Implement Greedy search algorithm for any of the following application:
+#  Selection Sort
+#  Prim's Minimal Spanning Tree Algorithm
+#  Kruskal's Minimal Spanning Tree Algorithm
+
 def selection_sort(arr):
     n = len(arr)
     for i in range(n):

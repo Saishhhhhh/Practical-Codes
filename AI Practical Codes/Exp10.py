@@ -105,7 +105,6 @@ winner = check_winner(board)
 display(board)
 print("Result:", winner)
 
-
 # You=O, AI=X. Positions 0-8.
 # Move: 0
 # ['O', ' ', ' ']

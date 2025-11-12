@@ -40,8 +40,6 @@ goal = input("Enter goal node: ").strip()
 
 
 # ---------- Step 4: Define A* Search Function ----------
-from queue import PriorityQueue
-
 def a_star(graph, start, goal, h):
     open_set = PriorityQueue()
     open_set.put((0, start))
