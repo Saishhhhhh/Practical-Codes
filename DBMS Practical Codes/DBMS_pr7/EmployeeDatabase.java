@@ -1,3 +1,6 @@
+// Write a program to implement MySQL/Oracle database connectivity with any front end language to
+// implement Database navigation operations (add, delete, edit etc.)
+
 import java.sql.*;
 import java.util.Scanner;
 

@@ -127,6 +127,3 @@ INSERT INTO Student (name) VALUES ('Ravi');
 INSERT INTO Student (name) VALUES ('Anita');
 INSERT INTO Student (name) VALUES ('Sanjay');
 SELECT * FROM Student;
-
-
-

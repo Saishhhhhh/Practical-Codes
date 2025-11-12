@@ -153,5 +153,3 @@ CALL return_book(2, 'AI Basics');
 
 -- Re-enable safe update mode if desired
 SET SQL_SAFE_UPDATES = 1;
-
-
