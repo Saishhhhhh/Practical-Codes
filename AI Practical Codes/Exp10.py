@@ -121,3 +121,10 @@ print("Result:", winner)
 # [' ', 'O', 'X']
 # [' ', ' ', 'O']
 # Result: O
+
+# Space Complexity  :   O(D)
+# Time Complexity  : O(B^D)
+# b = branching factor = number of possible moves per turn
+# d = maximum depth of the game tree
+
+# https://chatgpt.com/share/6914b447-0be0-8002-ba08-8fe0f1f3c2dd

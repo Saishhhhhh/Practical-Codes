@@ -140,3 +140,17 @@ if __name__ == "__main__":
 # 2 0 3 8
 # 0 3 0 0
 # 6 8 0 0
+
+# Selection Sort
+# Time Complexity O(n²)
+# Space Complexity: O(1)
+
+# Prim’s 
+# Time Complexity: O(V²)
+# Space Complexity	O(V)	
+
+# Kruskal’s	
+# Time Complexity: O(E log E)	
+# Space Complexity	O(V)
+
+# https://chatgpt.com/share/6914d579-a354-8002-887e-6504c0d91d90

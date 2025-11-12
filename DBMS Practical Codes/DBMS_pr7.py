@@ -2,7 +2,7 @@
 # Title: Implement MySQL Database Connectivity using Python
 # Objective: Perform Database Navigation Operations (Add, Edit, Delete, Display)
 # --------------------------------------------
-
+# pip install mysql-connector-python
 import mysql.connector
 from mysql.connector import Error
 

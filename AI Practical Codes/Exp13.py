@@ -106,3 +106,9 @@ menu()
 # Weight from 4 to 3: 4
 # Weight from 4 to 4: 0
 # Enter starting vertex: 0
+
+# Time Complexity : O(V²)
+# Space Complexity : O(V + E)
+# Where V = number of vertices, E = number of edges.
+
+# https://chatgpt.com/share/6914de22-b700-8002-8a4d-bcc5c9675a7a

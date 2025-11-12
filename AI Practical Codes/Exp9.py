@@ -95,3 +95,8 @@ else:
 # G 0
 # Start node: A
 # Goal node: G
+
+# Space Complexity  :   O(B^D)
+# Time Complexity  : O(B^D), where B is the branching factor of the search tree and D is the depth of the optimal solution.
+
+# https://chatgpt.com/share/69149f42-56d8-8002-8565-48dd056e127c

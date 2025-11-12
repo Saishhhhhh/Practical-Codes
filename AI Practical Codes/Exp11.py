@@ -136,3 +136,18 @@ if __name__ == "__main__":
 # . . . Q
 # Q . . .
 # . . Q .
+
+# Backtracking: 
+# O(N!) — in the worst case, it explores almost all permutations of N queens.
+# 💾 Space Complexity:
+
+# O(N²) if you use a full chessboard matrix.
+
+# Or O(N) if you store only one array pos[col] = row (optimized version)
+
+# Branch and Bound: 
+# Much better, usually O(N²) in practice (though exponential in worst case), since pruning reduces search space drastically.
+
+# Space Complexity O(N)
+
+# https://chatgpt.com/share/6914cbb6-8714-8002-a4c9-92360b934a62

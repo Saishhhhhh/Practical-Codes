@@ -95,3 +95,11 @@ else:
 # Edge (u v): C F
 # Edge (u v): E F
 # Enter start vertex: A
+
+# Space Complexity (DFS) : O(V) V is number of vertices
+# Time Complexity (DFS) : O(V + E) E is number of edges
+
+# Space Complexity (BFS) :  O(V)
+# Time Complexity (BFS) : O(V + E)
+
+# https://chatgpt.com/share/691488bc-eb18-8002-9f94-7f831bf5691c
