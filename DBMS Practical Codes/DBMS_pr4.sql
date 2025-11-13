@@ -155,3 +155,4 @@ CALL return_book(2, 'AI Basics');
 SET SQL_SAFE_UPDATES = 1;
 
 
+-- https://chatgpt.com/share/6915489c-5668-8002-bf0d-93211add19e6

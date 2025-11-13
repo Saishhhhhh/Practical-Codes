@@ -1,6 +1,6 @@
 Title: MongoDB Queries using CRUD operations. (Use CRUDoperations, SAVE method, logical operators etc)
 
-mongosh -  Type this in your terminal and start the below queries
+mongosh or mongo or mongod or monogdb-  Type this in your terminal and start the below queries
 
 use DYPIEMR
 
@@ -65,3 +65,5 @@ db.Teachers.updateOne(
 db.Teachers.deleteMany({dname: "IT" })
 
 db.Teachers.find().sort({ Tname: 1 }).limit(3).pretty()
+
+https://chatgpt.com/share/6914f1c0-0050-8002-8261-034ccc297921

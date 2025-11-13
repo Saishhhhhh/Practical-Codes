@@ -221,3 +221,95 @@ SET SQL_SAFE_UPDATES = 0;
 CALL DeptAvgSalary();
 SELECT * FROM dept_salary;
 SET SQL_SAFE_UPDATES = 1;
+
+-- -- ---------------------------------------------------------------
+-- -- 5: Parameterized Cursor – Department Average Salary
+-- -- ---------------------------------------------------------------
+-- -- This program calculates the average salary for a given department (passed as a parameter)
+-- -- using a parameterized cursor in MySQL stored procedure.
+-- -- ---------------------------------------------------------------
+
+-- -- Step 1: Create employee table (employee number, department number, salary)
+-- CREATE TABLE emp_dept(
+--     e_no INT PRIMARY KEY,
+--     d_no INT,
+--     salary DECIMAL(10,2)
+-- );
+
+-- -- Step 2: Create department salary table to store computed average salaries
+-- CREATE TABLE dept_salary(
+--     d_no INT PRIMARY KEY,
+--     avg_salary DECIMAL(10,2)
+-- );
+
+-- -- Step 3: Insert sample employee data
+-- INSERT INTO emp_dept VALUES
+-- (1,101,20000),
+-- (2,101,25000),
+-- (3,102,30000),
+-- (4,102,40000);
+
+-- -- Step 4: Create stored procedure using a PARAMETERIZED CURSOR
+-- DELIMITER $$
+
+-- CREATE PROCEDURE DeptAvgSalary(IN p_dno INT)   -- 'p_dno' is an input parameter (department number)
+-- BEGIN
+--     -- Declare variables
+--     DECLARE done INT DEFAULT FALSE;            -- Flag to check when cursor reading is complete
+--     DECLARE v_e_no INT;                        -- Variable to hold employee number
+--     DECLARE v_salary DECIMAL(10,2);            -- Variable to hold salary of employee
+--     DECLARE v_total DECIMAL(10,2) DEFAULT 0;   -- Variable to accumulate total salary
+--     DECLARE v_count INT DEFAULT 0;             -- Variable to count number of employees
+--     DECLARE v_avg DECIMAL(10,2);               -- Variable to store computed average
+
+--     -- Step 4.1: Declare PARAMETERIZED cursor that selects employees of a specific department
+--     DECLARE cur CURSOR FOR 
+--         SELECT e_no, salary FROM emp_dept WHERE d_no = p_dno;
+
+--     -- Step 4.2: Declare handler to detect when no more rows are left in cursor
+--     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+--     -- Step 4.3: Open cursor
+--     OPEN cur;
+
+--     -- Step 4.4: Start reading each record one by one
+--     read_loop: LOOP
+--         FETCH cur INTO v_e_no, v_salary;       -- Fetch data from cursor into variables
+--         IF done THEN                           -- When cursor reaches end, exit loop
+--             LEAVE read_loop;
+--         END IF;
+
+--         -- Add salary to total and increment count
+--         SET v_total = v_total + v_salary;
+--         SET v_count = v_count + 1;
+--     END LOOP;
+
+--     -- Step 4.5: Close cursor
+--     CLOSE cur;
+
+--     -- Step 4.6: Calculate average if employees exist in department
+--     IF v_count > 0 THEN
+--         SET v_avg = v_total / v_count;
+
+--         -- Step 4.7: Insert computed average into dept_salary table
+--         INSERT INTO dept_salary (d_no, avg_salary)
+--         VALUES (p_dno, v_avg);
+--     END IF;
+-- END$$
+
+-- DELIMITER ;
+
+-- -- Step 5: Disable safe updates temporarily
+-- SET SQL_SAFE_UPDATES = 0;
+
+-- -- Step 6: Call procedure for specific departments
+-- CALL DeptAvgSalary(101);
+-- CALL DeptAvgSalary(102);
+
+-- -- Step 7: Display computed results
+-- SELECT * FROM dept_salary;
+
+-- -- Step 8: Re-enable safe updates
+-- SET SQL_SAFE_UPDATES = 1;
+
+-- https://chatgpt.com/share/69154cb0-9dfc-8002-904c-424706b99300

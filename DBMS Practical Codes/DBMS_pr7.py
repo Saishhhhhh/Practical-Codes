@@ -144,3 +144,5 @@ def show_menu():
 
 if __name__ == "__main__":
     show_menu()
+
+# https://chatgpt.com/share/69154dbd-44f0-8002-bcaf-967eb0472f3d

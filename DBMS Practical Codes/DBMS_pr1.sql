@@ -129,4 +129,4 @@ INSERT INTO Student (name) VALUES ('Sanjay');
 SELECT * FROM Student;
 
 
-
+-- https://chatgpt.com/c/6914ea57-e938-8324-ac70-5165e986775f

@@ -133,3 +133,5 @@ CREATE VIEW borrow_deposit_view AS
 SELECT b.cust_name,d.acc_no FROM borrower b JOIN depositor d ON b.cust_name=d.cust_name;
 
 select *from borrow_deposit_view;
+
+https://chatgpt.com/share/6914ef18-ed80-8002-b65a-9ef0f70e3c47
