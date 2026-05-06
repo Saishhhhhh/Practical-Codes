@@ -1,63 +1,89 @@
-# Lab Assignment 13
-# Title: Big Data Analytics
-# PROBLEM STATEMENT: Simple Scala Program using Apache Spark Framework
-// ---------------- INSTALLATION STEPS ----------------
+/*
+========================================================
+Lab Assignment 13
+Title: Big Data Analytics
 
-// 1. Install Java (JDK 17 or above)
-// Check Java installation:
-    // java -version
+Problem Statement:
+Write a simple program in SCALA.
 
-// 2. Install Scala
-// Check Scala installation:
-    // scala -version
+========================================================
+STEP 1: INSTALL JAVA IN UBUNTU
+--------------------------------------------------------
+Open terminal and run:
 
-// 3. Install Apache Spark
-// Download Spark from:
-    // https://spark.apache.org/downloads.html
+sudo apt update
+sudo apt install openjdk-11-jdk -y
 
-// 4. Set Environment Variables
-// Add Scala, Java, and Spark bin folders to PATH
+Check Java version:
 
-// ---------------- RUN COMMANDS ----------------
+java -version
 
-// Compile Scala Program:
-    // scalac filename.scala
+========================================================
+STEP 2: INSTALL SCALA
+--------------------------------------------------------
+Install Scala using command:
 
-// Run Scala Program:
-    // scala filename
+sudo apt install scala -y
 
-// ---------------------------------------------------
+Check Scala version:
 
-# import Spark libraries
-import org.apache.spark.sql.SparkSession
+scala -version
 
-object HelloSpark {
+========================================================
+STEP 3: CREATE SCALA FILE
+--------------------------------------------------------
+Create a file named:
 
+HelloWorld.scala
+
+========================================================
+STEP 4: COMPILE THE PROGRAM
+--------------------------------------------------------
+Open terminal in the folder where file is saved.
+
+Compile program using:
+
+scalac HelloWorld.scala
+
+After compilation, class files will be generated.
+
+========================================================
+STEP 5: RUN THE PROGRAM
+--------------------------------------------------------
+Run program using:
+
+scala HelloWorld
+
+========================================================
+EXPECTED OUTPUT
+--------------------------------------------------------
+Hello, World!
+
+========================================================
+SCALA PROGRAM
+========================================================
+*/
+
+// Scala Program to Print Hello World
+// Using Object-Oriented Approach
+
+object HelloWorld {
+
+  // Main Method
   def main(args: Array[String]): Unit = {
 
-    // Create Spark Session
-    val spark = SparkSession.builder()
-      .appName("Hello Spark")
-      .master("local[*]")
-      .getOrCreate()
+    // Printing message
+    println("Hello, World!")
 
-    // Sample Data
-    val data = Seq(
-      ("Laukik", 21),
-      ("Nikhil", 22),
-      ("Sakshi", 20)
-    )
-
-    // Convert data into DataFrame
-    val df = spark.createDataFrame(data)
-      .toDF("Name", "Age")
-
-    // Display DataFrame
-    println("Student Data:")
-
-    df.show()
-
-    // Stop Spark Session
-    spark.stop()
   }
 }
+
+/*
+========================================================
+CONCLUSION
+--------------------------------------------------------
+Successfully installed Scala and executed
+a simple Scala program in Ubuntu Linux.
+
+========================================================
+*/
