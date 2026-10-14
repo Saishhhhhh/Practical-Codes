@@ -1,0 +1,201 @@
+Transaction_ID,Date,Region,Product_Category,Quantity_Sold,Sales_Amount
+TXN1001,2024-02-21,South,Electronics,1,1214
+TXN1002,2024-01-15,South,Clothing,1,445
+TXN1003,2024-03-12,South,Clothing,8,3609
+TXN1004,2024-03-01,North,Home Appliances,2,1685
+TXN1005,2024-01-21,East,Home Appliances,8,6802
+TXN1006,2024-03-23,East,Electronics,7,8397
+TXN1007,2024-03-27,North,Clothing,2,929
+TXN1008,2024-03-15,North,Home Appliances,6,5106
+TXN1009,2024-03-15,Central,Home Appliances,6,5108
+TXN1010,2024-03-28,North,Groceries,3,350
+TXN1011,2024-01-24,North,Home Appliances,2,1688
+TXN1012,2024-01-03,South,Electronics,1,1190
+TXN1013,2024-01-22,Central,Electronics,6,7209
+TXN1014,2024-02-22,North,Home Appliances,5,4240
+TXN1015,2024-01-02,East,Electronics,9,10807
+TXN1016,2024-03-28,West,Home Appliances,1,901
+TXN1017,2024-01-30,North,Groceries,7,861
+TXN1018,2024-02-07,West,Home Appliances,5,4242
+TXN1019,2024-01-02,South,Clothing,5,2280
+TXN1020,2024-03-04,East,Home Appliances,2,1690
+TXN1021,2024-02-29,East,Clothing,3,1300
+TXN1022,2024-01-21,East,Home Appliances,7,5925
+TXN1023,2024-02-02,North,Groceries,6,674
+TXN1024,2024-03-16,West,Clothing,2,892
+TXN1025,2024-02-27,South,Groceries,6,720
+TXN1026,2024-01-22,North,Groceries,2,281
+TXN1027,2024-03-29,North,Electronics,2,2408
+TXN1028,2024-02-18,East,Electronics,2,2395
+TXN1029,2024-02-28,East,Electronics,3,3620
+TXN1030,2024-02-11,North,Electronics,2,2345
+TXN1031,2024-02-29,East,Electronics,4,4805
+TXN1032,2024-03-20,North,Home Appliances,9,7669
+TXN1033,2024-01-15,East,Electronics,6,7164
+TXN1034,2024-03-02,North,Clothing,1,478
+TXN1035,2024-03-02,West,Footwear,8,2808
+TXN1036,2024-02-16,South,Electronics,7,8390
+TXN1037,2024-03-02,Central,Footwear,3,1065
+TXN1038,2024-02-20,North,Clothing,1,506
+TXN1039,2024-02-24,South,Electronics,5,6004
+TXN1040,2024-03-04,North,Home Appliances,4,3406
+TXN1041,2024-01-03,Central,Home Appliances,8,6789
+TXN1042,2024-02-20,West,Groceries,1,99
+TXN1043,2024-01-07,North,Footwear,1,370
+TXN1044,2024-01-21,East,Footwear,4,1379
+TXN1045,2024-03-13,West,Clothing,8,3601
+TXN1046,2024-02-08,East,Electronics,5,5989
+TXN1047,2024-01-18,East,Footwear,2,711
+TXN1048,2024-01-04,North,Footwear,6,2108
+TXN1049,2024-03-29,North,Groceries,5,625
+TXN1050,2024-02-29,Central,Clothing,2,888
+TXN1051,2024-01-14,Central,Clothing,3,1344
+TXN1052,2024-01-09,East,Footwear,9,3126
+TXN1053,2024-03-30,South,Clothing,7,3139
+TXN1054,2024-02-22,South,Groceries,7,849
+TXN1055,2024-01-02,West,Groceries,6,738
+TXN1056,2024-03-24,Central,Clothing,8,3577
+TXN1057,2024-02-29,Central,Footwear,4,1421
+TXN1058,2024-03-11,West,Footwear,8,2833
+TXN1059,2024-02-13,East,Electronics,4,4810
+TXN1060,2024-01-08,North,Groceries,8,1006
+TXN1061,2024-02-16,North,Home Appliances,9,7631
+TXN1062,2024-02-04,Central,Footwear,3,1019
+TXN1063,2024-03-18,East,Clothing,3,1306
+TXN1064,2024-03-21,North,Groceries,2,277
+TXN1065,2024-02-05,North,Clothing,3,1366
+TXN1066,2024-02-19,East,Electronics,3,3599
+TXN1067,2024-01-04,North,Groceries,5,606
+TXN1068,2024-01-02,North,Electronics,5,5972
+TXN1069,2024-01-06,East,Clothing,2,961
+TXN1070,2024-02-23,West,Groceries,6,723
+TXN1071,2024-01-04,East,Groceries,5,602
+TXN1072,2024-02-23,North,Home Appliances,6,5118
+TXN1073,2024-03-03,West,Home Appliances,1,862
+TXN1074,2024-01-18,North,Clothing,5,2255
+TXN1075,2024-03-30,South,Clothing,9,4031
+TXN1076,2024-02-13,West,Clothing,2,911
+TXN1077,2024-02-03,East,Home Appliances,1,897
+TXN1078,2024-03-14,West,Footwear,9,3183
+TXN1079,2024-03-02,East,Footwear,9,3189
+TXN1080,2024-01-14,East,Footwear,9,3138
+TXN1081,2024-02-17,North,Electronics,6,7176
+TXN1082,2024-01-15,South,Clothing,8,3597
+TXN1083,2024-03-12,North,Electronics,1,1201
+TXN1084,2024-03-18,North,Home Appliances,4,3427
+TXN1085,2024-03-27,Central,Clothing,1,408
+TXN1086,2024-03-02,South,Groceries,8,998
+TXN1087,2024-02-09,Central,Clothing,1,447
+TXN1088,2024-03-25,East,Electronics,3,3590
+TXN1089,2024-03-20,West,Electronics,4,4775
+TXN1090,2024-03-22,East,Footwear,8,2759
+TXN1091,2024-02-22,East,Home Appliances,6,5120
+TXN1092,2024-01-24,South,Electronics,7,8401
+TXN1093,2024-01-26,North,Electronics,8,9568
+TXN1094,2024-03-29,West,Footwear,2,668
+TXN1095,2024-02-29,South,Electronics,8,9592
+TXN1096,2024-02-10,North,Footwear,3,1091
+TXN1097,2024-01-29,East,Footwear,7,2444
+TXN1098,2024-01-15,North,Electronics,3,3563
+TXN1099,2024-02-14,Central,Electronics,7,8394
+TXN1100,2024-03-05,Central,Groceries,2,234
+TXN1101,2024-03-29,Central,Clothing,6,2633
+TXN1102,2024-03-11,South,Clothing,3,1349
+TXN1103,2024-01-09,North,Footwear,3,1045
+TXN1104,2024-03-28,Central,Groceries,9,1097
+TXN1105,2024-01-01,South,Groceries,7,886
+TXN1106,2024-01-08,Central,Footwear,5,1778
+TXN1107,2024-03-28,Central,Clothing,7,3144
+TXN1108,2024-03-03,West,Electronics,9,10773
+TXN1109,2024-01-11,South,Footwear,1,414
+TXN1110,2024-03-21,South,Home Appliances,7,5951
+TXN1111,2024-01-08,West,Clothing,6,2700
+TXN1112,2024-02-04,South,Groceries,9,1080
+TXN1113,2024-02-04,North,Electronics,1,1204
+TXN1114,2024-02-02,East,Clothing,4,1797
+TXN1115,2024-01-05,Central,Electronics,9,10786
+TXN1116,2024-02-10,West,Clothing,4,1787
+TXN1117,2024-01-28,East,Electronics,3,3600
+TXN1118,2024-01-07,North,Electronics,9,10787
+TXN1119,2024-03-13,East,Electronics,2,2383
+TXN1120,2024-03-12,Central,Home Appliances,4,3402
+TXN1121,2024-01-12,North,Footwear,6,2094
+TXN1122,2024-02-03,East,Home Appliances,2,1737
+TXN1123,2024-02-02,West,Groceries,8,894
+TXN1124,2024-02-17,West,Clothing,8,3627
+TXN1125,2024-01-23,West,Clothing,1,481
+TXN1126,2024-03-02,West,Groceries,3,309
+TXN1127,2024-03-28,South,Electronics,9,10792
+TXN1128,2024-02-06,South,Groceries,5,591
+TXN1129,2024-02-13,West,Electronics,6,7165
+TXN1130,2024-03-26,West,Groceries,4,461
+TXN1131,2024-02-04,West,Electronics,2,2373
+TXN1132,2024-03-05,Central,Groceries,8,1003
+TXN1133,2024-02-16,East,Home Appliances,6,5123
+TXN1134,2024-03-18,East,Groceries,5,631
+TXN1135,2024-01-03,West,Electronics,9,10818
+TXN1136,2024-01-01,East,Home Appliances,1,822
+TXN1137,2024-01-05,West,Groceries,5,587
+TXN1138,2024-03-30,West,Home Appliances,6,5112
+TXN1139,2024-01-14,Central,Home Appliances,5,4220
+TXN1140,2024-01-27,South,Home Appliances,6,5117
+TXN1141,2024-01-09,South,Clothing,6,2694
+TXN1142,2024-03-19,North,Home Appliances,7,5941
+TXN1143,2024-01-15,East,Home Appliances,4,3417
+TXN1144,2024-03-30,North,Groceries,8,971
+TXN1145,2024-02-11,South,Electronics,7,8391
+TXN1146,2024-03-17,East,Clothing,9,4078
+TXN1147,2024-02-20,South,Groceries,7,813
+TXN1148,2024-03-03,East,Groceries,3,375
+TXN1149,2024-02-21,North,Clothing,3,1364
+TXN1150,2024-01-04,North,Home Appliances,8,6793
+TXN1151,2024-01-23,West,Clothing,5,2258
+TXN1152,2024-01-15,South,Electronics,4,4769
+TXN1153,2024-02-12,North,Clothing,8,3623
+TXN1154,2024-01-29,East,Clothing,6,2696
+TXN1155,2024-02-05,West,Home Appliances,2,1687
+TXN1156,2024-01-13,North,Electronics,4,4826
+TXN1157,2024-02-01,East,Groceries,4,463
+TXN1158,2024-03-11,North,Groceries,6,685
+TXN1159,2024-02-28,North,Home Appliances,6,5062
+TXN1160,2024-03-26,East,Home Appliances,1,865
+TXN1161,2024-01-28,East,Clothing,8,3568
+TXN1162,2024-03-06,East,Footwear,6,2143
+TXN1163,2024-02-11,West,Home Appliances,3,2498
+TXN1164,2024-02-14,Central,Electronics,9,10842
+TXN1165,2024-03-02,East,Groceries,2,245
+TXN1166,2024-02-26,South,Footwear,8,2798
+TXN1167,2024-01-06,West,Groceries,3,347
+TXN1168,2024-01-28,North,Footwear,5,1759
+TXN1169,2024-01-28,South,Home Appliances,6,5100
+TXN1170,2024-02-13,North,Clothing,6,2727
+TXN1171,2024-03-24,North,Groceries,4,482
+TXN1172,2024-01-30,Central,Groceries,3,363
+TXN1173,2024-03-02,West,Electronics,4,4791
+TXN1174,2024-03-15,West,Electronics,1,1199
+TXN1175,2024-03-29,South,Clothing,4,1807
+TXN1176,2024-03-02,North,Footwear,1,308
+TXN1177,2024-01-01,North,Groceries,1,87
+TXN1178,2024-01-27,North,Electronics,6,7218
+TXN1179,2024-03-02,East,Home Appliances,5,4254
+TXN1180,2024-03-17,West,Clothing,4,1796
+TXN1181,2024-01-03,East,Groceries,3,360
+TXN1182,2024-03-10,North,Footwear,1,358
+TXN1183,2024-03-12,Central,Footwear,6,2087
+TXN1184,2024-01-27,West,Clothing,2,881
+TXN1185,2024-01-09,East,Clothing,8,3604
+TXN1186,2024-03-02,East,Clothing,5,2226
+TXN1187,2024-02-06,South,Electronics,7,8410
+TXN1188,2024-02-20,North,Groceries,2,198
+TXN1189,2024-02-13,South,Footwear,8,2825
+TXN1190,2024-01-24,West,Groceries,2,251
+TXN1191,2024-03-19,North,Groceries,4,486
+TXN1192,2024-02-28,North,Home Appliances,1,874
+TXN1193,2024-02-01,North,Footwear,5,1791
+TXN1194,2024-03-28,North,Groceries,9,1105
+TXN1195,2024-02-21,West,Footwear,1,304
+TXN1196,2024-03-02,West,Electronics,9,10769
+TXN1197,2024-02-27,South,Clothing,8,3585
+TXN1198,2024-02-21,North,Electronics,6,7200
+TXN1199,2024-01-12,South,Groceries,7,852
+TXN1200,2024-02-08,South,Home Appliances,3,2532
